@@ -13,9 +13,9 @@ git checkout -b feature/new-feature
 
 ### 2. Local Development
 ```bash
-npm run serve
+npm run dev
 ```
-This starts a development server with hot-reload at localhost:8080.
+This starts a development server with hot-reload
 
 ### 3. Testing
 - Test the new feature functionality in your browser
