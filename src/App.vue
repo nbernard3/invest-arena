@@ -69,8 +69,20 @@ export default {
 </script>
 
 <style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #0f172a;
+}
+
 .container {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
   min-height: 100vh;
