@@ -6,14 +6,11 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/stratinevst-arena/', // Match repository name
+  base: process.env.NODE_ENV === 'production' 
+  ? '/stratinvest-arena/' 
+  : '/',
   plugins: [
     vue(),
     vueDevTools(),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
-  },
+  ]
 })
