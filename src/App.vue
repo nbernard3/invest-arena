@@ -6,22 +6,16 @@
 
     <div class="disclaimer">
       <p>
-        Avis de non-responsabilité: Cet outil est uniquement destiné à la simulation. 
-        Les auteurs ne peuvent être tenus responsables des décisions d'investissement prises sur la base 
+        Avis de non-responsabilité: Cet outil est uniquement destiné à la simulation.
+        Les auteurs ne peuvent être tenus responsables des décisions d'investissement prises sur la base
         de ces résultats. Les performances passées ne préjugent pas des performances futures.
       </p>
     </div>
 
     <div class="time-horizon">
       <label for="timeHorizon">Horizon temporel (années)</label>
-      <input 
-        type="number" 
-        id="timeHorizon" 
-        v-model="selectedTimeHorizon"
-        @input="validateTimeHorizon"
-        min="5"
-        max="30"
-      />
+      <input type="number" id="timeHorizon" v-model="selectedTimeHorizon" @input="validateTimeHorizon" min="5"
+        max="30" />
     </div>
 
     <div class="arena">
@@ -31,7 +25,7 @@
           <p>Placeholder Gauche</p>
         </div>
       </div>
-      
+
       <div class="vs">VS</div>
 
       <div class="challenger challenger-red">
@@ -42,10 +36,28 @@
       </div>
     </div>
 
-    <div class="results">
-      <div class="results-title">Combat Results</div>
-      <div class="results-content">
-        <p>Résultats</p>
+    <div class="button-container">
+      <button @click="handleFightSimulation" :disabled="isLoading" class="fight-button">
+        <span class="lucide-swords"></span>
+        <span>
+          {{ isLoading ? 'FIGHTING...' : 'MARKET KOMBAT!' }}
+        </span>
+        <span class="lucide-swords"></span>
+
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div v-if="showResults" class="fade-in">
+      <div class="results">
+        <div class="results-title">Combat Results</div>
+        <div class="results-content">
+          <p>Résultats</p>
+        </div>
       </div>
     </div>
   </div>
@@ -56,26 +68,44 @@ export default {
   name: 'InvestmentSimulator',
   data() {
     return {
-      selectedTimeHorizon: '5'
+      selectedTimeHorizon: '5',
+      showResults: false,
+      isLoading: false
     }
   },
   methods: {
     validateTimeHorizon(event) {
       const value = Math.min(Math.max(parseInt(event.target.value) || 5, 5), 30)
       this.selectedTimeHorizon = value.toString()
+    },
+
+    async handleFightSimulation() {
+      this.isLoading = true
+      this.showResults = false
+
+      // Simulate computation time
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Here you'll add your actual simulation logic
+      
+      this.showResults = true
+      this.isLoading = false
     }
   }
 }
 </script>
 
 <style>
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -121,16 +151,17 @@ nav h1 {
 
 .time-horizon {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .time-horizon label {
-  display: block;
   font-size: 1.25rem;
   font-weight: bold;
   color: #fbbf24;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
 }
 
 .time-horizon input {
@@ -256,5 +287,69 @@ nav h1 {
 
 .results-content p {
   color: #c084fc;
+}
+
+.fight-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem 3rem;
+  background: linear-gradient(to right, #f59e0b, #ef4444);
+  border-radius: 0.5rem;
+  border: 4px solid #fcd34d;
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fight-button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #fbbf24, #f87171);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+.fight-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.corner {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 4px solid #fcd34d;
+}
+
+.corner-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.corner-tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.corner-bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.corner-br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fade-in-down 0.5s ease-out;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 2rem 0;
 }
 </style>
