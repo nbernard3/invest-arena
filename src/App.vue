@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <nav>
-      <h1>Stratinvest-Arena</h1>
+      <h1>Market Kombat</h1>
     </nav>
 
     <div class="disclaimer">
@@ -18,29 +18,28 @@
         max="30" />
     </div>
 
-    <div class="arena">
-      <div class="challenger challenger-blue">
-        <div class="challenger-title">Challenger 1</div>
-        <div class="challenger-content">
-          <p>Placeholder Gauche</p>
-        </div>
-      </div>
-
-      <div class="vs">VS</div>
-
-      <div class="challenger challenger-red">
-        <div class="challenger-title">Challenger 2</div>
-        <div class="challenger-content">
-          <p>Placeholder Droite</p>
-        </div>
-      </div>
+        <!-- Combat Arena -->
+    <div class="combat-arena">
+      <ChallengerPlaceholder
+        title="Challenger 1"
+        placeholder-text="Placeholder Gauche"
+        variant="blue"
+      />
+      
+      <div class="versus">VS</div>
+      
+      <ChallengerPlaceholder
+        title="Challenger 2"
+        placeholder-text="Placeholder Droite"
+        variant="red"
+      />
     </div>
 
     <div class="button-container">
       <button @click="handleFightSimulation" :disabled="isLoading" class="fight-button">
         <span class="lucide-swords"></span>
         <span>
-          {{ isLoading ? 'FIGHTING...' : 'MARKET KOMBAT!' }}
+          {{ isLoading ? 'FIGHTING...' : 'READY? FIGHT!' }}
         </span>
         <span class="lucide-swords"></span>
 
@@ -51,10 +50,9 @@
       </button>
     </div>
 
-    <!-- Results -->
     <div v-if="showResults" class="fade-in">
       <div class="results">
-        <div class="results-title">Combat Results</div>
+        <div class="results-title">Results</div>
         <div class="results-content">
           <p>Résultats</p>
         </div>
@@ -64,11 +62,16 @@
 </template>
 
 <script>
+import ChallengerPlaceholder from './ChallengerPlaceholder.vue'
+
 export default {
   name: 'InvestmentSimulator',
+  components: {
+    ChallengerPlaceholder
+  },
   data() {
     return {
-      selectedTimeHorizon: '5',
+      selectedTimeHorizon: '10',
       showResults: false,
       isLoading: false
     }
@@ -178,7 +181,7 @@ nav h1 {
   box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.5);
 }
 
-.arena {
+.combat-arena {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
@@ -249,7 +252,7 @@ nav h1 {
   color: #f87171;
 }
 
-.vs {
+.versus {
   display: flex;
   align-items: center;
   justify-content: center;
