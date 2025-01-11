@@ -29,6 +29,11 @@ export default {
             selectedETF: 'msci-world'
         }
     },
+    computed: {
+        totalContribution() {
+            return this.investmentAmount;
+        }
+    },
     watch: {
         investmentAmount(newVal) {
             this.$emit('update:strategy', {
@@ -43,6 +48,9 @@ export default {
                 amount: this.investmentAmount,
                 etf: newVal
             })
+        },
+        totalContribution(newVal) {
+            this.$emit('contributionUpdate', newVal);
         }
     }
 }

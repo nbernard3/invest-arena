@@ -18,25 +18,17 @@
         max="30" />
     </div>
 
-        <!-- Combat Arena -->
+    <!-- Combat Arena -->
     <div class="combat-arena">
-      <ChallengerPlaceholder
-        title="Challenger 1"
-        placeholder-text="Placeholder Gauche"
-        variant="blue"
-      />
-      
+      <ChallengerPlaceholder title="Challenger 1" placeholder-text="Placeholder Gauche" variant="blue" />
+
       <div class="versus">VS</div>
-      
-      <ChallengerPlaceholder
-        title="Challenger 2"
-        placeholder-text="Placeholder Droite"
-        variant="red"
-      />
+
+      <ChallengerPlaceholder title="Challenger 2" placeholder-text="Placeholder Droite" variant="red" />
     </div>
 
     <div class="button-container">
-      <button @click="handleFightSimulation" :disabled="isLoading" class="fight-button">
+      <button @click="runSimulation" :disabled="isLoading" class="fight-button">
         <span class="lucide-swords"></span>
         <span>
           {{ isLoading ? 'FIGHTING...' : 'READY? FIGHT!' }}
@@ -50,30 +42,33 @@
       </button>
     </div>
 
-    <div v-if="showResults" class="fade-in">
-      <div class="results">
-        <div class="results-title">Results</div>
-        <div class="results-content">
-          <p>Résultats</p>
-        </div>
-      </div>
-    </div>
+    <ResultsView v-if="showResults" :challenger1="challenger1Results" :challenger2="challenger2Results" />
   </div>
 </template>
 
 <script>
 import ChallengerPlaceholder from './ChallengerPlaceholder.vue'
+import ResultsView from './ResultsView.vue'
 
 export default {
   name: 'InvestmentSimulator',
   components: {
-    ChallengerPlaceholder
+    ChallengerPlaceholder,
+    ResultsView
   },
   data() {
     return {
       selectedTimeHorizon: '10',
       showResults: false,
-      isLoading: false
+      isLoading: false,
+      challenger1Results: { 
+        name: 'Challenger 1', 
+        contribution: 0 
+      },
+      challenger2Results: { 
+        name: 'Challenger 2', 
+        contribution: 0 
+      }
     }
   },
   methods: {
@@ -82,15 +77,15 @@ export default {
       this.selectedTimeHorizon = value.toString()
     },
 
-    async handleFightSimulation() {
+    async runSimulation() {
       this.isLoading = true
       this.showResults = false
 
       // Simulate computation time
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       // Here you'll add your actual simulation logic
-      
+
       this.showResults = true
       this.isLoading = false
     }
@@ -197,37 +192,6 @@ nav h1 {
   font-weight: bold;
 }
 
-.results {
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  background-color: #1e293b;
-  border: 2px solid #a855f7;
-  box-shadow: 0 4px 6px -1px rgb(168 85 247 / 0.5);
-}
-
-.results-title {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #a855f7;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-}
-
-.results-content {
-  height: 6rem;
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  border-radius: 0.375rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.results-content p {
-  color: #c084fc;
-}
-
 .fight-button {
   display: flex;
   align-items: center;
@@ -264,16 +228,40 @@ nav h1 {
   border: 4px solid #fcd34d;
 }
 
-.corner-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-.corner-tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
-.corner-bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
-.corner-br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+.corner-tl {
+  top: 0;
+  left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.corner-tr {
+  top: 0;
+  right: 0;
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.corner-bl {
+  bottom: 0;
+  left: 0;
+  border-right: 0;
+  border-top: 0;
+}
+
+.corner-br {
+  bottom: 0;
+  right: 0;
+  border-left: 0;
+  border-top: 0;
+}
 
 @keyframes fade-in-down {
   from {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

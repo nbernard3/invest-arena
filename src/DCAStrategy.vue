@@ -31,11 +31,23 @@
 <script>
 export default {
     name: 'DCAStrategy',
+    props: {
+        timeHorizon: {
+            type: Number,
+            default: 10
+        }
+    },
     data() {
         return {
             initialAmount: 10000,
             monthlyAmount: 500,
             selectedETF: 'msci-world'
+        }
+    },
+    computed: {
+        totalContribution() {
+            const years = this.timeHorizon || 10;
+            return this.initialAmount + (this.monthlyAmount * 12 * years);
         }
     },
     watch: {
@@ -62,10 +74,13 @@ export default {
                 monthlyAmount: this.monthlyAmount,
                 etf: newVal
             })
+        },
+        totalContribution(newVal) {
+            this.$emit('contributionUpdate', newVal);
         }
     }
 }
-</script>
+</script>Ò
 
 <style scoped>
 .dca-strategy {

@@ -12,11 +12,8 @@
             </select>
         </div>
         <div :class="['challenger-content', variant]">
-            <component 
-                :is="currentStrategyComponent"
-                @update:strategy="handleStrategyUpdate"
-                v-if="currentStrategyComponent"
-            />
+            <component :is="currentStrategyComponent" @update:strategy="handleStrategyUpdate"
+                v-if="currentStrategyComponent" />
         </div>
     </div>
 </template>
@@ -51,7 +48,7 @@ export default {
     data() {
         return {
             selectedStrategy: 'dca',
-            strategyData: null
+            totalContribution: 0
         }
     },
     computed: {
@@ -71,6 +68,13 @@ export default {
                 strategy: this.selectedStrategy,
                 data: data
             })
+        },
+        handleContributionUpdate(amount) {
+            this.totalContribution = amount;
+            this.$emit('contributionUpdate', {
+                challenger: this.title,
+                amount: amount
+            });
         }
     }
 }
@@ -78,99 +82,104 @@ export default {
 
 <style scoped>
 .challenger-placeholder {
-  flex: 1;
-  background-color: #1e293b;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  border: 2px solid;
-  transition: transform 0.2s;
+    flex: 1;
+    background-color: #1e293b;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 2px solid;
+    transition: transform 0.2s;
 }
 
 .challenger-placeholder:hover {
-  transform: scale(1.02);
+    transform: scale(1.02);
 }
 
 .challenger-placeholder.blue {
-  border-color: #3b82f6;
-  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
 }
 
 .challenger-placeholder.red {
-  border-color: #ef4444;
-  box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.5);
+    border-color: #ef4444;
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.5);
 }
 
 .challenger-title {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 2rem;  /* Increased space between title and selector */
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+    /* Increased space between title and selector */
 }
 
 .challenger-title.blue {
-  color: #3b82f6;
+    color: #3b82f6;
 }
 
 .challenger-title.red {
-  color: #ef4444;
+    color: #ef4444;
 }
 
 .challenger-content {
-  display: flex;
-  border: 1px solid;
-  border-radius: 0.375rem;
-  margin-top: 1.5rem;  /* Increased space after selector */
+    display: flex;
+    border: 1px solid;
+    border-radius: 0.375rem;
+    margin-top: 1.5rem;
+    /* Increased space after selector */
 }
 
 .challenger-content.blue {
-  border-color: rgba(59, 130, 246, 0.3);
-  color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
 }
 
 .challenger-content.red {
-  border-color: rgba(239, 68, 68, 0.3);
-  color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
 }
 
 .strategy-selector {
-  margin-bottom: 0.5rem;  /* Reduced bottom margin since we added space to title */
-  width: 100%;
+    margin-bottom: 0.5rem;
+    /* Reduced bottom margin since we added space to title */
+    width: 100%;
 }
 
 .strategy-select {
-  width: 100%;
-  padding: 0.75rem;  /* Slightly increased padding for better clickability */
-  border-radius: 0.375rem;
-  background-color: #1e293b;
-  font-size: 1rem;
-  cursor: pointer;
-  outline: none;
+    width: 100%;
+    padding: 0.75rem;
+    /* Slightly increased padding for better clickability */
+    border-radius: 0.375rem;
+    background-color: #1e293b;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
 }
 
 .strategy-select.blue {
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .strategy-select.red {
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .strategy-select.blue:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .strategy-select.red:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 
 .strategy-select option {
-  background-color: #1e293b;
-  padding: 0.5rem;  /* Added padding to dropdown options */
+    background-color: #1e293b;
+    padding: 0.5rem;
+    /* Added padding to dropdown options */
 }
 </style>
