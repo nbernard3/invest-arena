@@ -185,71 +185,7 @@ nav h1 {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
-}
-
-.challenger {
-  flex: 1;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  background-color: #1e293b;
-  border: 2px solid;
-  transition: transform 0.2s;
-}
-
-.challenger:hover {
-  transform: scale(1.05);
-}
-
-.challenger-blue {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 6px -1px rgb(59 130 246 / 0.5);
-}
-
-.challenger-red {
-  border-color: #ef4444;
-  box-shadow: 0 4px 6px -1px rgb(239 68 68 / 0.5);
-}
-
-.challenger-title {
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.challenger-blue .challenger-title {
-  color: #3b82f6;
-}
-
-.challenger-red .challenger-title {
-  color: #ef4444;
-}
-
-.challenger-content {
-  height: 12rem;
-  margin-top: 1rem;
-  border: 1px solid;
-  border-radius: 0.375rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.challenger-blue .challenger-content {
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-.challenger-red .challenger-content {
-  border-color: rgba(239, 68, 68, 0.3);
-}
-
-.challenger-blue .challenger-content p {
-  color: #60a5fa;
-}
-
-.challenger-red .challenger-content p {
-  color: #f87171;
+  min-height: fit-content;
 }
 
 .versus {

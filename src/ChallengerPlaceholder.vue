@@ -1,3 +1,4 @@
+<!-- ChallengerPlaceholder.vue -->
 <template>
     <div :class="['challenger-placeholder', variant]">
         <div :class="['challenger-title', variant]">
@@ -11,14 +12,25 @@
             </select>
         </div>
         <div :class="['challenger-content', variant]">
-            <p>Strat: {{ getStrategyDisplayName }}</p>
+            <component 
+                :is="currentStrategyComponent"
+                @update:strategy="handleStrategyUpdate"
+                v-if="currentStrategyComponent"
+            />
         </div>
     </div>
 </template>
 
 <script>
+import DCAStrategy from './DCAStrategy.vue'
+import LumpsumStrategy from './LumpsumStrategy.vue'
+
 export default {
     name: 'ChallengerPlaceholder',
+    components: {
+        DCAStrategy,
+        LumpsumStrategy
+    },
     props: {
         title: {
             type: String,
@@ -38,17 +50,27 @@ export default {
     },
     data() {
         return {
-            selectedStrategy: 'lumpsum'
+            selectedStrategy: 'dca',
+            strategyData: null
         }
     },
     computed: {
-        getStrategyDisplayName() {
-            const strategyNames = {
-                lumpsum: 'Lumpsum sur ETF',
-                dca: 'DCA sur ETF',
-                lmnp: 'LMNP'
+        currentStrategyComponent() {
+            const components = {
+                lumpsum: 'LumpsumStrategy',
+                dca: 'DCAStrategy',
+                lmnp: null // To be implemented
             }
-            return strategyNames[this.selectedStrategy]
+            return components[this.selectedStrategy]
+        }
+    },
+    methods: {
+        handleStrategyUpdate(data) {
+            this.strategyData = data
+            this.$emit('strategy-update', {
+                strategy: this.selectedStrategy,
+                data: data
+            })
         }
     }
 }
@@ -96,10 +118,7 @@ export default {
 }
 
 .challenger-content {
-  height: 12rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
   border: 1px solid;
   border-radius: 0.375rem;
   margin-top: 1.5rem;  /* Increased space after selector */
