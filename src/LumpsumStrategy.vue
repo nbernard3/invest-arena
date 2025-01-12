@@ -29,28 +29,18 @@ export default {
             selectedETF: 'msci-world'
         }
     },
-    computed: {
-        totalContribution() {
-            return this.investmentAmount;
-        }
-    },
-    watch: {
-        investmentAmount(newVal) {
-            this.$emit('update:strategy', {
-                type: 'lumpsum',
-                amount: newVal,
-                etf: this.selectedETF
-            })
-        },
-        selectedETF(newVal) {
-            this.$emit('update:strategy', {
-                type: 'lumpsum',
-                amount: this.investmentAmount,
-                etf: newVal
-            })
-        },
-        totalContribution(newVal) {
-            this.$emit('contributionUpdate', newVal);
+    methods: {
+        computeResults() {
+            const totalContribution = this.investmentAmount
+
+            return {
+                totalContribution,
+                strategy: 'DCA',
+                details: {
+                    initialAmount: this.initialAmount,
+                    timeHorizon: this.timeHorizon
+                }
+            }
         }
     }
 }

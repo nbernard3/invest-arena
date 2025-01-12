@@ -44,39 +44,23 @@ export default {
             selectedETF: 'msci-world'
         }
     },
-    computed: {
-        totalContribution() {
-            const years = this.timeHorizon || 10;
-            return this.initialAmount + (this.monthlyAmount * 12 * years);
-        }
-    },
-    watch: {
-        initialAmount(newVal) {
-            this.$emit('update:strategy', {
-                type: 'dca',
-                initialAmount: newVal,
-                monthlyAmount: this.monthlyAmount,
-                etf: this.selectedETF
-            })
-        },
-        monthlyAmount(newVal) {
-            this.$emit('update:strategy', {
-                type: 'dca',
-                initialAmount: this.initialAmount,
-                monthlyAmount: newVal,
-                etf: this.selectedETF
-            })
-        },
-        selectedETF(newVal) {
-            this.$emit('update:strategy', {
-                type: 'dca',
-                initialAmount: this.initialAmount,
-                monthlyAmount: this.monthlyAmount,
-                etf: newVal
-            })
-        },
-        totalContribution(newVal) {
-            this.$emit('contributionUpdate', newVal);
+    methods: {
+        computeResults() {
+            // Calculate total contribution based on initial amount and monthly investments
+            const totalMonths = this.timeHorizon * 12
+            const totalMonthlyContributions = this.monthlyAmount * totalMonths
+            const totalContribution = this.initialAmount + totalMonthlyContributions
+
+            return {
+                totalContribution,
+                strategy: 'DCA',
+                details: {
+                    initialAmount: this.initialAmount,
+                    monthlyAmount: this.monthlyAmount,
+                    etf: this.selectedETF,
+                    timeHorizon: this.timeHorizon
+                }
+            }
         }
     }
 }

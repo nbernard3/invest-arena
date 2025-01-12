@@ -12,7 +12,7 @@
             </select>
         </div>
         <div :class="['challenger-content', variant]">
-            <component :is="currentStrategyComponent" @update:strategy="handleStrategyUpdate"
+            <component :is="currentStrategyComponent" ref="strategyComponent" :timeHorizon="timeHorizon"
                 v-if="currentStrategyComponent" />
         </div>
     </div>
@@ -69,12 +69,12 @@ export default {
                 data: data
             })
         },
-        handleContributionUpdate(amount) {
-            this.totalContribution = amount;
-            this.$emit('contributionUpdate', {
-                challenger: this.title,
-                amount: amount
-            });
+        computeResults() {
+            const strategyComponent = this.$refs.strategyComponent
+            if (strategyComponent && strategyComponent.computeResults) {
+                return strategyComponent.computeResults()
+            }
+            return null
         }
     }
 }

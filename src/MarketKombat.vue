@@ -20,11 +20,13 @@
 
     <!-- Combat Arena -->
     <div class="combat-arena">
-      <ChallengerPlaceholder title="Challenger 1" placeholder-text="Placeholder Gauche" variant="blue" />
+      <ChallengerPlaceholder ref="challenger1" title="Challenger 1" placeholder-text="Placeholder Gauche" variant="blue"
+        :timeHorizon="parseInt(selectedTimeHorizon)" />
 
       <div class="versus">VS</div>
 
-      <ChallengerPlaceholder title="Challenger 2" placeholder-text="Placeholder Droite" variant="red" />
+      <ChallengerPlaceholder ref="challenger2" title="Challenger 2" placeholder-text="Placeholder Droite" variant="red"
+        :timeHorizon="parseInt(selectedTimeHorizon)" />
     </div>
 
     <div class="button-container">
@@ -61,13 +63,13 @@ export default {
       selectedTimeHorizon: '10',
       showResults: false,
       isLoading: false,
-      challenger1Results: { 
-        name: 'Challenger 1', 
-        contribution: 0 
+      challenger1Results: {
+        name: 'Challenger 1',
+        contribution: 0
       },
-      challenger2Results: { 
-        name: 'Challenger 2', 
-        contribution: 0 
+      challenger2Results: {
+        name: 'Challenger 2',
+        contribution: 0
       }
     }
   },
@@ -81,10 +83,28 @@ export default {
       this.isLoading = true
       this.showResults = false
 
-      // Simulate computation time
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Get results from both challengers
+      const challenger1 = this.$refs.challenger1
+      const challenger2 = this.$refs.challenger2
 
-      // Here you'll add your actual simulation logic
+      const results1 = challenger1.computeResults()
+      const results2 = challenger2.computeResults()
+
+      // Update results
+      this.challenger1Results = {
+        name: 'Challenger 1',
+        contribution: results1.totalContribution,
+        ...results1
+      }
+
+      this.challenger2Results = {
+        name: 'Challenger 2',
+        contribution: results2.totalContribution,
+        ...results2
+      }
+
+      // Simulate a brief loading state
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       this.showResults = true
       this.isLoading = false

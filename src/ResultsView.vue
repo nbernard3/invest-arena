@@ -100,12 +100,25 @@ export default {
     color: #3b82f6;
 }
 
+.challenger-result-blue p {
+    color: #60a5fa;
+}
+
 .challenger-result-red {
     border-color: rgba(239, 68, 68, 0.3);
 }
 
 .challenger-result-red h3 {
     color: #ef4444;
+}
+
+.challenger-result-red p {
+    color: #f87171;
+}
+
+.contribution-amount {
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 @keyframes fade-in-down {
