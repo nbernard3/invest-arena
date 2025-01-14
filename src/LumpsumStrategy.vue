@@ -25,6 +25,12 @@ import { simulateETF } from './simulator.js'
 
 export default {
     name: 'LumpsumStrategy',
+    props: {
+        timeHorizon: {
+            type: Number,
+            default: 10
+        }
+    },
     data() {
         return {
             investmentAmount: 50000,
@@ -33,7 +39,7 @@ export default {
     },
     methods: {
         computeResults() {
-            simResults = simulateETF({
+            const simResults = simulateETF({
                 initialAmount: this.investmentAmount,
                 monthlyAmount: 0,
                 timeHorizonYears: this.timeHorizon,
