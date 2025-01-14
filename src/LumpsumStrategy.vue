@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { simulateETF } from './simulator.js'
+
 export default {
     name: 'LumpsumStrategy',
     data() {
@@ -31,15 +33,17 @@ export default {
     },
     methods: {
         computeResults() {
-            const totalContribution = this.investmentAmount
+            simResults = simulateETF({
+                initialAmount: this.investmentAmount,
+                monthlyAmount: 0,
+                timeHorizonYears: this.timeHorizon,
+                etfType: this.selectedETF
+            });
 
             return {
-                totalContribution,
-                strategy: 'DCA',
-                details: {
-                    initialAmount: this.initialAmount,
-                    timeHorizon: this.timeHorizon
-                }
+                strategy: 'Lumpsum',
+                totalInvestedEvolution: simResults.totalInvestedEvolution,
+                portfolioEvolution: simResults.portfolioEvolution
             }
         }
     }

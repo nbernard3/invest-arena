@@ -64,12 +64,10 @@ export default {
       showResults: false,
       isLoading: false,
       challenger1Results: {
-        name: 'Challenger 1',
-        contribution: 0
+        name: 'Challenger 1'
       },
       challenger2Results: {
-        name: 'Challenger 2',
-        contribution: 0
+        name: 'Challenger 2'
       }
     }
   },
@@ -93,18 +91,13 @@ export default {
       // Update results
       this.challenger1Results = {
         name: 'Challenger 1',
-        contribution: results1.totalContribution,
         ...results1
       }
 
       this.challenger2Results = {
         name: 'Challenger 2',
-        contribution: results2.totalContribution,
         ...results2
       }
-
-      // Simulate a brief loading state
-      await new Promise(resolve => setTimeout(resolve, 1000))
 
       this.showResults = true
       this.isLoading = false

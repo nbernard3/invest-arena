@@ -47,7 +47,7 @@ function simulateETF(params) {
     const months = timeHorizonYears * 12;
 
     let totalInvestedEvolution = [];
-    totalInvestedEvolution.push(new Array(simNb).fill(initialAmount));
+    totalInvestedEvolution.push(initialAmount);
     
     let portfolioEvolution = [];
     portfolioEvolution.push(new Array(simNb).fill(initialAmount * (1 - FEES.etf.transaction)));
@@ -87,7 +87,7 @@ function step(prevState, params) {
     const monthlyVol = params.volatility / Math.sqrt(12);
     const returns = generateRandomReturn(monthlyMean, monthlyVol, params.simNb);
 
-    const totalInvested = prevTotalInvested.map((tot) => tot + params.monthlyAmount);
+    const totalInvested = prevTotalInvested + params.monthlyAmount;
     let portfolios = prevPortfolios.map((pf, index) =>
         pf * (1 + returns[index]) * (1 - FEES.etf.ongoing / 12) + params.monthlyAmount * (1 - FEES.etf.transaction));
 
@@ -143,4 +143,4 @@ export {
     FEES
 };
 
-const toto = simulateETF({initialAmount:1000, monthlyAmount: 500, timeHorizonYears: 8, etfType:'sp500'});
+//const toto = simulateETF({initialAmount:1000, monthlyAmount: 500, timeHorizonYears: 8, etfType:'sp500'});

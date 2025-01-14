@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { simulateETF } from './simulator.js'
+
 export default {
     name: 'DCAStrategy',
     props: {
@@ -46,25 +48,22 @@ export default {
     },
     methods: {
         computeResults() {
-            // Calculate total contribution based on initial amount and monthly investments
-            const totalMonths = this.timeHorizon * 12
-            const totalMonthlyContributions = this.monthlyAmount * totalMonths
-            const totalContribution = this.initialAmount + totalMonthlyContributions
+            const simResults = simulateETF({
+                initialAmount: this.initialAmount,
+                monthlyAmount: this.monthlyAmount,
+                timeHorizonYears: this.timeHorizon,
+                etfType: this.selectedETF
+            });
 
             return {
-                totalContribution,
                 strategy: 'DCA',
-                details: {
-                    initialAmount: this.initialAmount,
-                    monthlyAmount: this.monthlyAmount,
-                    etf: this.selectedETF,
-                    timeHorizon: this.timeHorizon
-                }
+                totalInvestedEvolution: simResults.totalInvestedEvolution,
+                portfolioEvolution: simResults.portfolioEvolution
             }
         }
     }
 }
-</script>Ò
+</script>
 
 <style scoped>
 .dca-strategy {
