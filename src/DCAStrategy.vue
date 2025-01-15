@@ -4,15 +4,15 @@
         <div class="input-group">
             <label for="initialAmount">Montant initial</label>
             <div class="input-wrapper">
-                <input type="number" id="initialAmount" v-model="initialAmount" min="0" step="1000" />
-                <span class="currency">€</span>
+                <input type="number" id="initialAmount" v-model="initialAmountInKeuros" min="0" />
+                <span class="currency">k€</span>
             </div>
         </div>
 
         <div class="input-group">
             <label for="monthlyAmount">Investissement mensuel</label>
             <div class="input-wrapper">
-                <input type="number" id="monthlyAmount" v-model="monthlyAmount" min="0" step="100" />
+                <input type="number" id="monthlyAmount" v-model="monthlyAmount" min="0" />
                 <span class="currency">€</span>
             </div>
         </div>
@@ -41,7 +41,7 @@ export default {
     },
     data() {
         return {
-            initialAmount: 10000,
+            initialAmountInKeuros: 10,
             monthlyAmount: 500,
             selectedETF: 'msci-world'
         }
@@ -49,7 +49,7 @@ export default {
     methods: {
         computeResults() {
             const simResults = simulateETF({
-                initialAmount: this.initialAmount,
+                initialAmount: this.initialAmountInKeuros*1000,
                 monthlyAmount: this.monthlyAmount,
                 timeHorizonYears: this.timeHorizon,
                 etfType: this.selectedETF

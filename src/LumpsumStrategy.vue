@@ -4,8 +4,8 @@
         <div class="input-group">
             <label for="investmentAmount">Montant à investir</label>
             <div class="input-wrapper">
-                <input type="number" id="investmentAmount" v-model="investmentAmount" min="0" step="1000" />
-                <span class="currency">€</span>
+                <input type="number" id="investmentAmount" v-model="investmentAmountInKeuros" min="0"/>
+                <span class="currency">k€</span>
             </div>
         </div>
 
@@ -33,14 +33,14 @@ export default {
     },
     data() {
         return {
-            investmentAmount: 50000,
+            investmentAmountInKeuros: 70,
             selectedETF: 'msci-world'
         }
     },
     methods: {
         computeResults() {
             const simResults = simulateETF({
-                initialAmount: this.investmentAmount,
+                initialAmount: this.investmentAmountInKeuros*1000,
                 monthlyAmount: 0,
                 timeHorizonYears: this.timeHorizon,
                 etfType: this.selectedETF
