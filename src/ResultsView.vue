@@ -73,31 +73,11 @@ export default {
             const ctx = this.$refs.chart.getContext('2d')
 
             // Process data to get median values
-            const data = this.processEvolutionData()
+            const data = this.processDataForPlotting()
 
             this.chart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: [
-                        {
-                            label: this.challenger1.name,
-                            data: data.challenger1Values,
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: this.challenger2.name,
-                            data: data.challenger2Values,
-                            borderColor: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
+                data: data,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -109,7 +89,10 @@ export default {
                         legend: {
                             position: 'top',
                             labels: {
-                                color: '#fff'
+                                filter: function (legendItem, data) {
+                                    // Only show specific labels in legend
+                                    return legendItem.text !== false;
+                                }
                             }
                         },
                         tooltip: {
@@ -124,78 +107,104 @@ export default {
                                 }
                             }
                         }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#fff',
-                                callback: (value) => `Year ${Math.floor(value / 12)}`
-                            }
-                        },
-                        y: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#fff',
-                                callback: (value) => this.formatCurrency(value)
-                            }
-                        }
                     }
                 }
             })
         },
 
-        processEvolutionData() {
-            const length = Math.min(
-                this.challenger1.portfolioEvolution.length,
-                this.challenger2.portfolioEvolution.length
-            )
+        processDataForPlotting() {
+            const labels = Array(this.challenger1.portfolioEvolution.length).fill(0).map((_, i) => i / 12);
 
-            const labels = Array(length).fill(0).map((_, i) => i)
-            const challenger1Values = Array(length).fill(0).map((_, i) => {
-                const values = this.challenger1.portfolioEvolution[i]
-                return values ? this.calculateMedian(values) : 0
-            })
-            const challenger2Values = Array(length).fill(0).map((_, i) => {
-                const values = this.challenger2.portfolioEvolution[i]
-                return values ? this.calculateMedian(values) : 0
-            })
+            const challenger1Percentiles = this.computePercentiles(this.challenger1.portfolioEvolution);
+            const challenger2Percentiles = this.computePercentiles(this.challenger2.portfolioEvolution);
 
             return {
                 labels,
-                challenger1Values,
-                challenger2Values
+                datasets: [
+                    {
+                        label: "#1 Total invested",
+                        data: this.challenger1.totalInvestedEvolution,
+                        borderDash: [10, 5],
+                        borderColor: '#3b82f6',  // Blue color for challenger 1
+                        borderWidth: 2,
+                        pointStyle: false,
+                        fill: false
+                    },
+                    {
+                        label: "#1 median",
+                        data: challenger1Percentiles[1],
+                        borderColor: '#3b82f6',
+                        borderWidth: 2,
+                        pointStyle: false,
+                        fill: false
+                    },
+                    {
+                        label: "#1 Confidence Interval",
+                        data: challenger1Percentiles[2],  // Using upper bound data
+                        borderColor: 'transparent',  // Hide the line
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',  // Semi-transparent blue
+                        fill: {
+                            target: '+1',  // Fill to the next dataset
+                            above: 'rgba(59, 130, 246, 0.2)'  // Color above the line
+                        },
+                        pointStyle: false
+                    },
+                    {
+                        label: false,  // Hide from legend
+                        data: challenger1Percentiles[0],  // Using lower bound data
+                        borderColor: 'transparent',
+                        pointStyle: false,
+                        fill: false
+                    },
+
+                    {
+                        label: "#2 Total invested",
+                        data: this.challenger2.totalInvestedEvolution,
+                        borderDash: [10, 5],
+                        borderColor: '#ef4444',  // Red color for challenger 2
+                        borderWidth: 2,
+                        pointStyle: false,
+                        fill: false
+                    },
+                    {
+                        label: "#2 median",
+                        data: challenger2Percentiles[1],
+                        borderColor: '#ef4444',
+                        borderWidth: 2,
+                        pointStyle: false,
+                        fill: false
+                    },
+                    {
+                        label: "#2 Confidence Interval",
+                        data: challenger2Percentiles[2],  // Using upper bound data
+                        borderColor: 'transparent',  // Hide the line
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',  // Semi-transparent red
+                        fill: {
+                            target: '+1',  // Fill to the next dataset
+                            above: 'rgba(239, 68, 68, 0.2)'  // Color above the line
+                        },
+                        pointStyle: false
+                    },
+                    {
+                        label: false,  // Hide from legend
+                        data: challenger2Percentiles[0],  // Using lower bound data
+                        borderColor: 'transparent',
+                        pointStyle: false,
+                        fill: false
+                    }
+                ]
             }
         },
 
-        calculateMedian(arr) {
-            const sorted = [...arr].sort((a, b) => a - b)
-            const mid = Math.floor(sorted.length / 2)
-            return sorted.length % 2 === 0
-                ? (sorted[mid - 1] + sorted[mid]) / 2
-                : sorted[mid]
+        computePercentiles(portfolioEvolution, percentiles = [0.1, 0.5, 0.9]) {
+            const sorted = portfolioEvolution.map((portfolio) => portfolio.sort((a, b) => a - b));
+
+            return percentiles.map(
+                (perc) => sorted.map((portfolio) => portfolio[Math.floor(perc * (portfolio.length - 1))]))
         }
     },
     mounted() {
         this.createChart()
-    },
-    watch: {
-        challenger1: {
-            deep: true,
-            handler() {
-                this.createChart()
-            }
-        },
-        challenger2: {
-            deep: true,
-            handler() {
-                this.createChart()
-            }
-        }
     }
 }
 </script>
