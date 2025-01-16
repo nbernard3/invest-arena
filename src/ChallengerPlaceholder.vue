@@ -43,6 +43,10 @@ export default {
             validator: function (value) {
                 return ['blue', 'red'].indexOf(value) !== -1
             }
+        },
+        timeHorizon: {
+            type: Number,
+            default: 10
         }
     },
     data() {
