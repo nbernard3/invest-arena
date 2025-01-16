@@ -6,18 +6,18 @@
                 <div class="contribution-results">
                     <div class="challenger-result challenger-result-blue">
                         <h3>{{ challenger1.name }}</h3>
-                        <p>Contribution Totale: {{ formatCurrency(challenger1.contribution) }}</p>
+                        <p>Contribution Totale: 0</p>
                     </div>
                     <div class="challenger-result challenger-result-red">
                         <h3>{{ challenger2.name }}</h3>
-                        <p>Contribution Totale: {{ formatCurrency(challenger2.contribution) }}</p>
+                        <p>Contribution Totale: 0</p>
                     </div>
                 </div>
 
                 <div class="portfolio-evolution">
                     <h3>Portfolio Evolution</h3>
                     <div class="chart-container">
-                        <canvas ref="chart"></canvas>
+                        <Line :data="chartData" :options="chartOptions" ref="chart" />
                     </div>
                 </div>
             </div>
@@ -26,10 +26,16 @@
 </template>
 
 <script>
-import Chart from 'chart.js/auto'
+import { Line } from 'vue-chartjs';
+import { Chart as ChartJS, Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler} from 'chart.js'
+
+ChartJS.register(Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler)
 
 export default {
     name: 'ResultsView',
+    components: {
+        Line
+    },
     props: {
         challenger1: {
             type: Object,
@@ -52,10 +58,42 @@ export default {
             })
         }
     },
-    data() {
-        return {
-            chart: null
-        }
+    computed: {
+        chartData() {
+            return this.processDataForPlotting()
+        },
+        chartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            filter: function (legendItem, data) {
+                                // Only show specific labels in legend
+                                return legendItem.text !== false;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function (value, index) {
+                                // Assuming monthly data points (12 points per year)
+                                return index % 12 === 0 ? `Year ${index / 12}` : null;
+                            },
+                            autoSkip: false  // Prevents automatic tick skipping
+                        }
+                    }
+                }
+            }
+        },
     },
     methods: {
         formatCurrency(amount) {
@@ -63,52 +101,6 @@ export default {
                 style: 'currency',
                 currency: 'EUR'
             }).format(amount);
-        },
-
-        createChart() {
-            if (this.chart) {
-                this.chart.destroy()
-            }
-
-            const ctx = this.$refs.chart.getContext('2d')
-
-            // Process data to get median values
-            const data = this.processDataForPlotting()
-
-            this.chart = new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                filter: function (legendItem, data) {
-                                    // Only show specific labels in legend
-                                    return legendItem.text !== false;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                callback: function (value, index) {
-                                    // Assuming monthly data points (12 points per year)
-                                    return index % 12 === 0 ? `Year ${index / 12}` : null;
-                                },
-                                autoSkip: false  // Prevents automatic tick skipping
-                            }
-                        }
-                    },
-                }
-            })
         },
 
         processDataForPlotting() {
@@ -201,9 +193,6 @@ export default {
             return percentiles.map(
                 (perc) => sorted.map((portfolio) => portfolio[Math.floor(perc * (portfolio.length - 1))]))
         }
-    },
-    mounted() {
-        this.createChart()
     }
 }
 </script>

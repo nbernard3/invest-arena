@@ -44,7 +44,8 @@
       </button>
     </div>
 
-    <ResultsView v-if="showResults" :challenger1="challenger1Results" :challenger2="challenger2Results" />
+    <ResultsView v-if="resultsAvailable" :challenger1="challenger1Results"
+      :challenger2="challenger2Results" />
   </div>
 </template>
 
@@ -61,14 +62,10 @@ export default {
   data() {
     return {
       selectedTimeHorizon: '10',
-      showResults: false,
+      resultsAvailable: false,
       isLoading: false,
-      challenger1Results: {
-        name: 'Challenger 1'
-      },
-      challenger2Results: {
-        name: 'Challenger 2'
-      }
+      challenger1Results: null,
+      challenger2Results: null
     }
   },
   methods: {
@@ -79,14 +76,13 @@ export default {
 
     async runSimulation() {
       this.isLoading = true
-      this.showResults = false
+      this.resultsAvailable = false
 
       // Get results from both challengers
-      const challenger1 = this.$refs.challenger1
-      const challenger2 = this.$refs.challenger2
-
-      const results1 = challenger1.computeResults()
-      const results2 = challenger2.computeResults()
+      const [results1, results2] = await Promise.all([
+          this.$refs.challenger1.computeResults(),
+          this.$refs.challenger2.computeResults()
+        ]);
 
       // Update results
       this.challenger1Results = {
@@ -99,9 +95,9 @@ export default {
         ...results2
       }
 
-      this.showResults = true
+      this.resultsAvailable = true
       this.isLoading = false
-    }
+    },
   }
 }
 </script>
