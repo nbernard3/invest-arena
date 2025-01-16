@@ -94,18 +94,6 @@ export default {
                                     return legendItem.text !== false;
                                 }
                             }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    label += this.formatCurrency(context.parsed.y);
-                                    return label;
-                                }
-                            }
                         }
                     }
                 }
