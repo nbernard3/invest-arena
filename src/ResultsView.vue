@@ -95,7 +95,18 @@ export default {
                                 }
                             }
                         }
-                    }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function (value, index) {
+                                    // Assuming monthly data points (12 points per year)
+                                    return index % 12 === 0 ? `Year ${index / 12}` : null;
+                                },
+                                autoSkip: false  // Prevents automatic tick skipping
+                            }
+                        }
+                    },
                 }
             })
         },
