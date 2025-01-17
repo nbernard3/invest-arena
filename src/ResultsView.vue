@@ -86,7 +86,7 @@ export default {
                         ticks: {
                             callback: function (value, index) {
                                 // Assuming monthly data points (12 points per year)
-                                return index % 12 === 0 ? `Year ${index / 12}` : null;
+                                return index % 12 === 0 & index > 0 ? `T0+${index / 12}` : null;
                             },
                             autoSkip: false  // Prevents automatic tick skipping
                         }
