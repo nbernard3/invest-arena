@@ -193,6 +193,11 @@ export default {
                             },
                             autoSkip: false  // Prevents automatic tick skipping
                         }
+                    },
+                    y: {
+                        ticks: {
+                            callback: this.keurosFormat
+                        }
                     }
                 }
             }
@@ -201,8 +206,7 @@ export default {
     methods: {
         keurosFormat(amount) {
             const inThousands = amount / 1000;
-            const roundedToHalf = Math.round(inThousands * 2) / 2;
-            return `${roundedToHalf}k€`;
+            return `${inThousands.toFixed(1)}k€`;
         },
 
         processDataForPlotting() {
