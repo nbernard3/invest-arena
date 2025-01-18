@@ -7,37 +7,86 @@
                 <div v-else>It's a tie!</div>
             </div>
             <div class="results-content">
-                <div class="contribution-results">
-                    <div class="challenger-result challenger-result-blue">
-                        <h3>{{ challenger1.name }}</h3>
-                        <p>Contribution Totale: {{ keurosFormat(resultsSummary.totalInvested1) }}</p>
-                        <p>Plus-value latente:
-                            min:{{ keurosFormat(resultsSummary.capitalGain1[0]) }},
-                            median:{{ keurosFormat(resultsSummary.capitalGain1[1]) }},
-                            max:{{ keurosFormat(resultsSummary.capitalGain1[2]) }}</p>
-                        <p>Enrichissement latent:
-                            min:{{ keurosFormat(resultsSummary.portfolioIncrease1[0]) }},
-                            median:{{ keurosFormat(resultsSummary.portfolioIncrease1[1]) }},
-                            max:{{ keurosFormat(resultsSummary.portfolioIncrease1[2]) }}</p>
+                <div class="results-grid">
+                    <div class="portfolio-evolution">
+                        <div class="chart-container">
+                            <Line :data="chartData" :options="chartOptions" ref="chart" />
+                        </div>
                     </div>
-                    <div class="challenger-result challenger-result-red">
-                        <h3>{{ challenger2.name }}</h3>
-                        <p>Contribution Totale: {{ keurosFormat(resultsSummary.totalInvested2) }}</p>
-                        <p>Plus-value latente:
-                            min:{{ keurosFormat(resultsSummary.capitalGain2[0]) }},
-                            median:{{ keurosFormat(resultsSummary.capitalGain2[1]) }},
-                            max:{{ keurosFormat(resultsSummary.capitalGain2[2]) }}</p>
-                        <p>Enrichissement latent:
-                            min:{{ keurosFormat(resultsSummary.portfolioIncrease2[0]) }},
-                            median:{{ keurosFormat(resultsSummary.portfolioIncrease2[1]) }},
-                            max:{{ keurosFormat(resultsSummary.portfolioIncrease2[2]) }}</p>
-                    </div>
-                </div>
 
-                <div class="portfolio-evolution">
-                    <h3>Portfolio Evolution</h3>
-                    <div class="chart-container">
-                        <Line :data="chartData" :options="chartOptions" ref="chart" />
+                    <div class="contribution-results">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th class="metric-header"></th>
+                                    <th class="challenger-header challenger1">{{ challenger1.name }}</th>
+                                    <th class="challenger-header challenger2">{{ challenger2.name }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="metric-cell">Contribution totale</td>
+                                    <td class="value-cell challenger1">{{ keurosFormat(resultsSummary.totalInvested1) }}
+                                    </td>
+                                    <td class="value-cell challenger2">{{ keurosFormat(resultsSummary.totalInvested2) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-cell">Plus-value</td>
+                                    <td class="value-cell challenger1">
+                                        <div class="min-max">Min: {{ keurosFormat(resultsSummary.capitalGain1[0]) }}
+                                        </div>
+                                        <div class="median">
+                                            <span class="label">Median:</span>
+                                            <span class="value">{{ keurosFormat(resultsSummary.capitalGain1[1])
+                                                }}</span>
+                                        </div>
+                                        <div class="min-max">Max: {{ keurosFormat(resultsSummary.capitalGain1[2]) }}
+                                        </div>
+                                    </td>
+                                    <td class="value-cell challenger2">
+                                        <div class="min-max">Min: {{ keurosFormat(resultsSummary.capitalGain2[0]) }}
+                                        </div>
+                                        <div class="median">
+                                            <span class="label">Median:</span>
+                                            <span class="value">{{ keurosFormat(resultsSummary.capitalGain2[1])
+                                                }}</span>
+                                        </div>
+                                        <div class="min-max">Max: {{ keurosFormat(resultsSummary.capitalGain2[2]) }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-cell">Enrichissement latent</td>
+                                    <td class="value-cell challenger1">
+                                        <div class="min-max">Min: {{ keurosFormat(resultsSummary.portfolioIncrease1[0])
+                                            }}
+                                        </div>
+                                        <div class="median">
+                                            <span class="label">Median:</span>
+                                            <span class="value">{{ keurosFormat(resultsSummary.portfolioIncrease1[1])
+                                                }}</span>
+                                        </div>
+                                        <div class="min-max">Max: {{ keurosFormat(resultsSummary.portfolioIncrease1[2])
+                                            }}
+                                        </div>
+                                    </td>
+                                    <td class="value-cell challenger2">
+                                        <div class="min-max">Min: {{ keurosFormat(resultsSummary.portfolioIncrease2[0])
+                                            }}
+                                        </div>
+                                        <div class="median">
+                                            <span class="label">Median:</span>
+                                            <span class="value">{{ keurosFormat(resultsSummary.portfolioIncrease2[1])
+                                                }}</span>
+                                        </div>
+                                        <div class="min-max">Max: {{ keurosFormat(resultsSummary.portfolioIncrease2[2])
+                                            }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -242,8 +291,8 @@ export default {
                 }
             }
 
-            const winningRatio1 = winCounts1/(winCounts1+winCounts2);
-            const winningRatio2 = winCounts2/(winCounts1+winCounts2);
+            const winningRatio1 = winCounts1 / (winCounts1 + winCounts2);
+            const winningRatio2 = winCounts2 / (winCounts1 + winCounts2);
 
             const errorMargin = 0.05;
             const winner = winningRatio1 > 0.5 + errorMargin ? 1 : winningRatio2 > 0.5 + errorMargin ? 2 : 0;
@@ -286,13 +335,35 @@ export default {
 .results-content {
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 0.375rem;
+    padding: 1rem;
+    min-width: 0;
+    width: 100%;
+}
+
+.results-grid {
+    display: grid;
+    gap: 1.5rem;
+    /* By default (mobile), items are stacked */
+    grid-template-columns: 1fr;
+    width: 100%;
+    min-width: 0;
+}
+
+/* When screen is wide enough, switch to side-by-side */
+@media (min-width: 1024px) {
+    .results-grid {
+        grid-template-columns: minmax(500px, 3fr) minmax(300px, 2fr);
+    }
 }
 
 .contribution-results {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    padding: 1rem;
+    padding: 0;
+    min-width: 0;
+    width: 100%;
+    overflow-x: auto; /* Allow horizontal scroll if needed */
 }
 
 .challenger-result {
@@ -317,7 +388,9 @@ export default {
 }
 
 .portfolio-evolution {
-    padding: 1rem;
+    padding: 0;
+    min-width: 0;
+    width: 100%;
 }
 
 .portfolio-evolution h3 {
@@ -331,6 +404,8 @@ export default {
     background-color: #1e293b;
     border-radius: 0.375rem;
     padding: 1rem;
+    width: 100%;
+    min-width: 0;
 }
 
 @keyframes fade-in-down {
@@ -347,5 +422,81 @@ export default {
 
 .fade-in {
     animation: fade-in-down 0.5s ease-out;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e293b;
+    width: 100%;
+    /* Set a minimum width to prevent excessive squishing */
+    min-width: 280px;
+}
+
+.results-table th,
+.results-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.metric-header {
+    color: #a855f7;
+    font-weight: bold;
+}
+
+.challenger-header {
+    text-align: center;
+    font-weight: bold;
+}
+
+.challenger-header.challenger1,
+.value-cell.challenger1 {
+    color: #3b82f6;
+}
+
+.challenger-header.challenger2,
+.value-cell.challenger2 {
+    color: #ef4444;
+}
+
+.metric-cell {
+    color: #a855f7;
+}
+
+.value-cell {
+    text-align: center;
+}
+
+.value-cell .min-max {
+    font-size: 0.875rem;
+    opacity: 0.7;
+    margin: 0.25rem 0;
+}
+
+.value-cell .median {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background-color: rgba(168, 85, 247, 0.1);
+    border-radius: 0.25rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.value-cell .median .label {
+    opacity: 0.8;
+    margin-right: 0.5rem;
+}
+
+.value-cell .median .value {
+    font-size: 1.25rem;
+}
+
+.value-cell.challenger1 .median {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.value-cell.challenger2 .median {
+    background-color: rgba(239, 68, 68, 0.1);
 }
 </style>
