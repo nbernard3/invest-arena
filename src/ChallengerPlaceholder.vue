@@ -21,12 +21,14 @@
 <script>
 import DCAStrategy from './DCAStrategy.vue'
 import LumpsumStrategy from './LumpsumStrategy.vue'
+import LMNPStrategy from './LMNPStrategy.vue'
 
 export default {
     name: 'ChallengerPlaceholder',
     components: {
         DCAStrategy,
-        LumpsumStrategy
+        LumpsumStrategy,
+        LMNPStrategy
     },
     props: {
         title: {
@@ -60,7 +62,7 @@ export default {
             const components = {
                 lumpsum: 'LumpsumStrategy',
                 dca: 'DCAStrategy',
-                lmnp: null // To be implemented
+                lmnp: 'LMNPStrategy'
             }
             return components[this.selectedStrategy]
         }
