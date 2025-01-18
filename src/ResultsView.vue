@@ -1,7 +1,11 @@
 <template>
     <div class="fade-in">
         <div class="results">
-            <div class="results-title">Results</div>
+            <div class="results-title">
+                <div v-if="resultsSummary.winner === 1">Challenger 1 wins!</div>
+                <div v-else-if="resultsSummary.winner === 2">Challenger 2 wins!</div>
+                <div v-else>It's a tie!</div>
+            </div>
             <div class="results-content">
                 <div class="contribution-results">
                     <div class="challenger-result challenger-result-blue">
@@ -223,6 +227,26 @@ export default {
             const portfolioIncrease1 = challenger1Percentiles.map((p) => p.at(-1) - p.at(0));
             const portfolioIncrease2 = challenger2Percentiles.map((p) => p.at(-1) - p.at(0));
 
+            const finalPortfolio1 = this.challenger1.portfolioEvolution.at(-1);
+            const finalPortfolio2 = this.challenger2.portfolioEvolution.at(-1);
+
+            let winCounts1 = 0;
+            let winCounts2 = 0;
+            for (const p1 of finalPortfolio1) {
+                for (const p2 of finalPortfolio2) {
+                    if (p1 >= p2) {
+                        winCounts1++;
+                    } else {
+                        winCounts2++;
+                    }
+                }
+            }
+
+            const winningRatio1 = winCounts1/(winCounts1+winCounts2);
+            const winningRatio2 = winCounts2/(winCounts1+winCounts2);
+
+            const errorMargin = 0.05;
+            const winner = winningRatio1 > 0.5 + errorMargin ? 1 : winningRatio2 > 0.5 + errorMargin ? 2 : 0;
 
             return {
                 capitalGain1,
@@ -230,7 +254,10 @@ export default {
                 totalInvested1,
                 totalInvested2,
                 portfolioIncrease1,
-                portfolioIncrease2
+                portfolioIncrease2,
+                winningRatio1,
+                winningRatio2,
+                winner
             }
         }
     }
@@ -281,17 +308,11 @@ export default {
 
 .challenger-result-blue {
     border-color: rgba(59, 130, 246, 0.3);
-}
-
-.challenger-result-blue h3 {
     color: #3b82f6;
 }
 
 .challenger-result-red {
     border-color: rgba(239, 68, 68, 0.3);
-}
-
-.challenger-result-red h3 {
     color: #ef4444;
 }
 
