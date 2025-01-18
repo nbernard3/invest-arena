@@ -6,11 +6,27 @@
                 <div class="contribution-results">
                     <div class="challenger-result challenger-result-blue">
                         <h3>{{ challenger1.name }}</h3>
-                        <p>Contribution Totale: {{ resultsSummary.totalInvested1 }}</p>
+                        <p>Contribution Totale: {{ keurosFormat(resultsSummary.totalInvested1) }}</p>
+                        <p>Plus-value latente:
+                            min:{{ keurosFormat(resultsSummary.capitalGain1[0]) }},
+                            median:{{ keurosFormat(resultsSummary.capitalGain1[1]) }},
+                            max:{{ keurosFormat(resultsSummary.capitalGain1[2]) }}</p>
+                        <p>Enrichissement latent:
+                            min:{{ keurosFormat(resultsSummary.portfolioIncrease1[0]) }},
+                            median:{{ keurosFormat(resultsSummary.portfolioIncrease1[1]) }},
+                            max:{{ keurosFormat(resultsSummary.portfolioIncrease1[2]) }}</p>
                     </div>
                     <div class="challenger-result challenger-result-red">
                         <h3>{{ challenger2.name }}</h3>
-                        <p>Contribution Totale: {{ resultsSummary.totalInvested2 }}</p>
+                        <p>Contribution Totale: {{ keurosFormat(resultsSummary.totalInvested2) }}</p>
+                        <p>Plus-value latente:
+                            min:{{ keurosFormat(resultsSummary.capitalGain2[0]) }},
+                            median:{{ keurosFormat(resultsSummary.capitalGain2[1]) }},
+                            max:{{ keurosFormat(resultsSummary.capitalGain2[2]) }}</p>
+                        <p>Enrichissement latent:
+                            min:{{ keurosFormat(resultsSummary.portfolioIncrease2[0]) }},
+                            median:{{ keurosFormat(resultsSummary.portfolioIncrease2[1]) }},
+                            max:{{ keurosFormat(resultsSummary.portfolioIncrease2[2]) }}</p>
                     </div>
                 </div>
 
@@ -27,7 +43,7 @@
 
 <script>
 import { Line } from 'vue-chartjs';
-import { Chart as ChartJS, Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler} from 'chart.js'
+import { Chart as ChartJS, Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler } from 'chart.js'
 
 ChartJS.register(Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler)
 
@@ -97,11 +113,10 @@ export default {
         },
     },
     methods: {
-        formatCurrency(amount) {
-            return new Intl.NumberFormat('fr-FR', {
-                style: 'currency',
-                currency: 'EUR'
-            }).format(amount);
+        keurosFormat(amount) {
+            const inThousands = amount / 1000;
+            const roundedToHalf = Math.round(inThousands * 2) / 2;
+            return `${roundedToHalf}k€`;
         },
 
         processDataForPlotting() {
@@ -199,9 +214,23 @@ export default {
             const totalInvested1 = this.challenger1.totalInvestedEvolution.at(-1);
             const totalInvested2 = this.challenger2.totalInvestedEvolution.at(-1);
 
+            const challenger1Percentiles = this.computePercentiles(this.challenger1.portfolioEvolution);
+            const challenger2Percentiles = this.computePercentiles(this.challenger2.portfolioEvolution);
+
+            const capitalGain1 = challenger1Percentiles.map((p) => p.at(-1) - totalInvested1);
+            const capitalGain2 = challenger2Percentiles.map((p) => p.at(-1) - totalInvested2);
+
+            const portfolioIncrease1 = challenger1Percentiles.map((p) => p.at(-1) - p.at(0));
+            const portfolioIncrease2 = challenger2Percentiles.map((p) => p.at(-1) - p.at(0));
+
+
             return {
+                capitalGain1,
+                capitalGain2,
                 totalInvested1,
-                totalInvested2
+                totalInvested2,
+                portfolioIncrease1,
+                portfolioIncrease2
             }
         }
     }
