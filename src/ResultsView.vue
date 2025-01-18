@@ -112,8 +112,10 @@
                                 </tr>
                                 <tr>
                                     <td class="metric-cell">Proba de victoire</td>
-                                    <td class="value-cell challenger1">{{ (resultsSummary.winningRatio1 * 100).toFixed(1) }}%</td>
-                                    <td class="value-cell challenger2">{{ (resultsSummary.winningRatio2 * 100).toFixed(1) }}%</td>
+                                    <td class="value-cell challenger1">{{ (resultsSummary.winningRatio1 *
+                                        100).toFixed(1) }}%</td>
+                                    <td class="value-cell challenger2">{{ (resultsSummary.winningRatio2 *
+                                        100).toFixed(1) }}%</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -173,6 +175,7 @@ export default {
                 plugins: {
                     legend: {
                         position: 'top',
+                        usePointStyle: true,
                         labels: {
                             filter: function (legendItem, data) {
                                 // Only show specific labels in legend
@@ -212,7 +215,7 @@ export default {
                 labels,
                 datasets: [
                     {
-                        label: "#1 Total invested",
+                        label: "#1 Contribution",
                         data: this.challenger1.totalInvestedEvolution,
                         borderDash: [10, 5],
                         borderColor: '#3b82f6',  // Blue color for challenger 1
@@ -221,7 +224,7 @@ export default {
                         fill: false
                     },
                     {
-                        label: "#1 median",
+                        label: "#1 Capital",
                         data: challenger1Percentiles[1],
                         borderColor: '#3b82f6',
                         borderWidth: 2,
@@ -229,7 +232,7 @@ export default {
                         fill: false
                     },
                     {
-                        label: "#1 Confidence Interval",
+                        label: false,
                         data: challenger1Percentiles[2],  // Using upper bound data
                         borderColor: 'transparent',  // Hide the line
                         backgroundColor: 'rgba(59, 130, 246, 0.2)',  // Semi-transparent blue
@@ -248,7 +251,7 @@ export default {
                     },
 
                     {
-                        label: "#2 Total invested",
+                        label: "#2 Contribution",
                         data: this.challenger2.totalInvestedEvolution,
                         borderDash: [10, 5],
                         borderColor: '#ef4444',  // Red color for challenger 2
@@ -257,7 +260,7 @@ export default {
                         fill: false
                     },
                     {
-                        label: "#2 median",
+                        label: "#2 Capital",
                         data: challenger2Percentiles[1],
                         borderColor: '#ef4444',
                         borderWidth: 2,
@@ -265,7 +268,7 @@ export default {
                         fill: false
                     },
                     {
-                        label: "#2 Confidence Interval",
+                        label: false,
                         data: challenger2Percentiles[2],  // Using upper bound data
                         borderColor: 'transparent',  // Hide the line
                         backgroundColor: 'rgba(239, 68, 68, 0.2)',  // Semi-transparent red
