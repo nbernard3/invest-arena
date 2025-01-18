@@ -14,8 +14,7 @@
 
     <div class="time-horizon">
       <label for="timeHorizon">Horizon temporel (années)</label>
-      <input type="number" id="timeHorizon" v-model="selectedTimeHorizon" @input="validateTimeHorizon" min="5"
-        max="30" />
+      <input type="number" id="timeHorizon" v-model="selectedTimeHorizon" min="5" max="30"/>
     </div>
 
     <!-- Combat Arena -->
@@ -69,11 +68,6 @@ export default {
     }
   },
   methods: {
-    validateTimeHorizon(event) {
-      const value = Math.min(Math.max(parseInt(event.target.value) || 5, 5), 30)
-      this.selectedTimeHorizon = value.toString()
-    },
-
     async runSimulation() {
       this.isLoading = true
       this.resultsAvailable = false
