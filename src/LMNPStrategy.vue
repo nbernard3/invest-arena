@@ -4,8 +4,8 @@
         <div class="input-group">
             <label for="propertyPrice">Montant du bien</label>
             <div class="input-wrapper">
-                <input type="number" id="propertyPrice" v-model="propertyPrice" min="0" />
-                <span class="currency">€</span>
+                <input type="number" id="propertyPrice" v-model="propertyPriceInKeuros" min="0" />
+                <span class="currency">k€</span>
             </div>
         </div>
 
@@ -62,7 +62,7 @@ export default {
     },
     data() {
         return {
-            propertyPrice: 200000,
+            propertyPriceInKeuros: 200,
             monthlyRent: 950,
             occupancyMonths: 12,
             downPaymentPercent: 20,
@@ -73,6 +73,7 @@ export default {
     methods: {
         computeResults() {
             // Placeholder for future implementation
+            const propertyPrice = this.propertyPriceInKeuros * 1000;
             return {
                 strategy: 'LMNP',
                 totalInvestedEvolution: [],
@@ -120,7 +121,8 @@ export default {
     color: inherit;
 }
 
-.currency, .unit {
+.currency,
+.unit {
     position: absolute;
     right: 0.75rem;
     color: inherit;
