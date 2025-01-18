@@ -32,6 +32,31 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td class="metric-cell">Capital final</td>
+                                    <td class="value-cell challenger1">
+                                        <div class="min-max">Min: {{ keurosFormat(resultsSummary.finalPortfolio1[0]) }}
+                                        </div>
+                                        <div class="median">
+                                            <span class="label">Median:</span>
+                                            <span class="value">{{ keurosFormat(resultsSummary.finalPortfolio1[1])
+                                                }}</span>
+                                        </div>
+                                        <div class="min-max">Max: {{ keurosFormat(resultsSummary.finalPortfolio1[2]) }}
+                                        </div>
+                                    </td>
+                                    <td class="value-cell challenger2">
+                                        <div class="min-max">Min: {{ keurosFormat(resultsSummary.finalPortfolio2[0]) }}
+                                        </div>
+                                        <div class="median">
+                                            <span class="label">Median:</span>
+                                            <span class="value">{{ keurosFormat(resultsSummary.finalPortfolio2[1])
+                                                }}</span>
+                                        </div>
+                                        <div class="min-max">Max: {{ keurosFormat(resultsSummary.finalPortfolio2[2]) }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td class="metric-cell">Plus-value</td>
                                     <td class="value-cell challenger1">
                                         <div class="min-max">Min: {{ keurosFormat(resultsSummary.capitalGain1[0]) }}
@@ -270,19 +295,22 @@ export default {
             const challenger1Percentiles = this.computePercentiles(this.challenger1.portfolioEvolution);
             const challenger2Percentiles = this.computePercentiles(this.challenger2.portfolioEvolution);
 
+            const finalPortfolio1 = challenger1Percentiles.map((p) => p.at(-1));
+            const finalPortfolio2 = challenger2Percentiles.map((p) => p.at(-1));
+
             const capitalGain1 = challenger1Percentiles.map((p) => p.at(-1) - totalInvested1);
             const capitalGain2 = challenger2Percentiles.map((p) => p.at(-1) - totalInvested2);
 
             const portfolioIncrease1 = challenger1Percentiles.map((p) => p.at(-1) - p.at(0));
             const portfolioIncrease2 = challenger2Percentiles.map((p) => p.at(-1) - p.at(0));
 
-            const finalPortfolio1 = this.challenger1.portfolioEvolution.at(-1);
-            const finalPortfolio2 = this.challenger2.portfolioEvolution.at(-1);
+            const finalPortfolioSim1 = this.challenger1.portfolioEvolution.at(-1);
+            const finalPortfolioSim2 = this.challenger2.portfolioEvolution.at(-1);
 
             let winCounts1 = 0;
             let winCounts2 = 0;
-            for (const p1 of finalPortfolio1) {
-                for (const p2 of finalPortfolio2) {
+            for (const p1 of finalPortfolioSim1) {
+                for (const p2 of finalPortfolioSim2) {
                     if (p1 >= p2) {
                         winCounts1++;
                     } else {
@@ -298,6 +326,8 @@ export default {
             const winner = winningRatio1 > 0.5 + errorMargin ? 1 : winningRatio2 > 0.5 + errorMargin ? 2 : 0;
 
             return {
+                finalPortfolio1,
+                finalPortfolio2,
                 capitalGain1,
                 capitalGain2,
                 totalInvested1,
