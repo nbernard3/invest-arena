@@ -6,11 +6,11 @@
                 <div class="contribution-results">
                     <div class="challenger-result challenger-result-blue">
                         <h3>{{ challenger1.name }}</h3>
-                        <p>Contribution Totale: 0</p>
+                        <p>Contribution Totale: {{ resultsSummary.totalInvested1 }}</p>
                     </div>
                     <div class="challenger-result challenger-result-red">
                         <h3>{{ challenger2.name }}</h3>
-                        <p>Contribution Totale: 0</p>
+                        <p>Contribution Totale: {{ resultsSummary.totalInvested2 }}</p>
                     </div>
                 </div>
 
@@ -42,7 +42,6 @@ export default {
             required: true,
             default: () => ({
                 name: 'Challenger 1',
-                contribution: 0,
                 portfolioEvolution: [],
                 totalInvestedEvolution: []
             })
@@ -52,13 +51,15 @@ export default {
             required: true,
             default: () => ({
                 name: 'Challenger 2',
-                contribution: 0,
                 portfolioEvolution: [],
                 totalInvestedEvolution: []
             })
         }
     },
     computed: {
+        resultsSummary() {
+            return this.processSummaryResults()
+        },
         chartData() {
             return this.processDataForPlotting()
         },
@@ -192,6 +193,16 @@ export default {
 
             return percentiles.map(
                 (perc) => sorted.map((portfolio) => portfolio[Math.floor(perc * (portfolio.length - 1))]))
+        },
+
+        processSummaryResults() {
+            const totalInvested1 = this.challenger1.totalInvestedEvolution.at(-1);
+            const totalInvested2 = this.challenger2.totalInvestedEvolution.at(-1);
+
+            return {
+                totalInvested1,
+                totalInvested2
+            }
         }
     }
 }
