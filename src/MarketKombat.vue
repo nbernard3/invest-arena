@@ -14,7 +14,7 @@
 
     <div class="time-horizon">
       <label for="timeHorizon">Horizon temporel (années)</label>
-      <input type="number" id="timeHorizon" v-model="selectedTimeHorizon" min="5" max="30"/>
+      <input type="number" id="timeHorizon" v-model="selectedTimeHorizon" min="5" max="30" />
     </div>
 
     <!-- Combat Arena -->
@@ -43,7 +43,7 @@
       </button>
     </div>
 
-    <ResultsView v-if="resultsAvailable" :challenger1="challenger1Results"
+    <ResultsView ref="resultsSection" v-if="resultsAvailable" :challenger1="challenger1Results"
       :challenger2="challenger2Results" />
   </div>
 </template>
@@ -72,11 +72,14 @@ export default {
       this.isLoading = true
       this.resultsAvailable = false
 
+      const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      await delay(100); // 0.1 second delay
+
       // Get results from both challengers
       const [results1, results2] = await Promise.all([
-          this.$refs.challenger1.computeResults(),
-          this.$refs.challenger2.computeResults()
-        ]);
+        this.$refs.challenger1.computeResults(),
+        this.$refs.challenger2.computeResults()
+      ]);
 
       // Update results
       this.challenger1Results = {
@@ -91,6 +94,14 @@ export default {
 
       this.resultsAvailable = true
       this.isLoading = false
+
+      await this.$nextTick();
+      if (this.$refs.resultsSection) {
+        this.$refs.resultsSection.$el.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     },
   }
 }
