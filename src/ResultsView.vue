@@ -110,6 +110,11 @@
                                         </div>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="metric-cell">Proba de victoire</td>
+                                    <td class="value-cell challenger1">{{ (resultsSummary.winningRatio1 * 100).toFixed(1) }}%</td>
+                                    <td class="value-cell challenger2">{{ (resultsSummary.winningRatio2 * 100).toFixed(1) }}%</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -393,7 +398,8 @@ export default {
     padding: 0;
     min-width: 0;
     width: 100%;
-    overflow-x: auto; /* Allow horizontal scroll if needed */
+    overflow-x: auto;
+    /* Allow horizontal scroll if needed */
 }
 
 .challenger-result {
