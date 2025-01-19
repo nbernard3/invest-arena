@@ -248,7 +248,7 @@ export default {
                             minRotation: 45,
                             callback: (value) => this.keurosFormat(value),
                             autoSkip: true,
-                            stepSize: 25000    // Force step size to 50k€
+                            stepSize: 50000    // Force step size to 50k€
                         }
                     },
                     y: {
