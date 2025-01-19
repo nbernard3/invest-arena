@@ -12,6 +12,9 @@
                         <div class="chart-container">
                             <Line :data="chartData" :options="chartOptions" ref="chart" />
                         </div>
+                        <div class="distribution-container">
+                            <Line :data="distributionData" :options="distributionOptions" />
+                        </div>
                     </div>
 
                     <div class="contribution-results">
@@ -216,6 +219,49 @@ export default {
                 }
             }
         },
+        distributionData() {
+            return this.processDataForDistribution()
+        },
+        distributionOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'linear',  // Explicitly set to linear
+                        title: {
+                            display: true,
+                            text: 'Capital final',
+                            color: '#a855f7'
+                        },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            callback: (value) => this.keurosFormat(value),
+                            autoSkip: true,
+                            stepSize: 25000    // Force step size to 50k€
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Densité (%)',
+                            color: '#a855f7'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        },
     },
     methods: {
         keurosFormat(amount) {
@@ -312,6 +358,80 @@ export default {
 
             return percentiles.map(
                 (perc) => sorted.map((portfolio) => portfolio[Math.floor(perc * (portfolio.length - 1))]))
+        },
+
+        processDataForDistribution() {
+            const finalPortfolios1 = this.challenger1.portfolioEvolution.at(-1);
+            const finalPortfolios2 = this.challenger2.portfolioEvolution.at(-1);
+
+            const binCount = 50;
+
+            // Force min to 0 and add a small buffer to max
+            const min = 0;
+            const max = Math.max(Math.max(...finalPortfolios1), Math.max(...finalPortfolios2)) * 1.05; // 5% buffer
+
+            const createDistributionData = (data, min, max) => {
+                const binWidth = (max - min) / binCount;
+                const bins = Array.from({ length: binCount }, (_, i) => min + (i * binWidth));
+
+                // Count values in each bin
+                const counts = new Array(binCount).fill(0);
+                data.forEach(value => {
+                    const binIndex = Math.min(Math.floor((value - min) / binWidth), binCount - 1);
+                    counts[binIndex]++;
+                });
+
+                // Smooth the distribution
+                const smoothingWindow = 3;
+                const smoothedCounts = counts.map((_, index) => {
+                    const start = Math.max(0, index - smoothingWindow);
+                    const end = Math.min(counts.length, index + smoothingWindow + 1);
+                    const windowValues = counts.slice(start, end);
+                    return windowValues.reduce((a, b) => a + b, 0) / windowValues.length;
+                });
+
+                // Normalize to percentage
+                const totalCount = data.length;
+                const density = smoothedCounts.map(count => (count / totalCount));
+
+                return density;
+            };
+
+            // Create bins for both distributions
+            const binWidth = (max - min) / binCount;
+            const bins = Array.from(
+                { length: binCount },
+                (_, i) => min + (i * binWidth)
+            );
+
+            const density1 = createDistributionData(finalPortfolios1, min, max);
+            const density2 = createDistributionData(finalPortfolios2, min, max);
+
+            return {
+                labels: bins,
+                datasets: [
+                    {
+                        label: '#1 Capital',
+                        data: density1,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: '#2 Capital',
+                        data: density2,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            }
         },
 
         processSummaryResults() {
@@ -474,6 +594,14 @@ export default {
     padding: 1rem;
     width: 100%;
     min-width: 0;
+}
+
+.distribution-container {
+    margin-top: 2rem;
+    height: 400px;
+    background-color: #1e293b;
+    border-radius: 0.375rem;
+    padding: 1rem;
 }
 
 @keyframes fade-in-down {
