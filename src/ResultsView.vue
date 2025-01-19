@@ -29,7 +29,7 @@
                                     <td class="value-cell challenger1">
                                         <div class="min-max">Initial: {{ keurosFormat(resultsSummary.initialInvested1)
                                             }}</div>
-                                        <div class="min-max">Cashflow mensuel: {{ keurosFormat(resultsSummary.cashflow1)
+                                        <div class="min-max">Cashflow: {{ keurosFormat(resultsSummary.cashflow1)
                                             }}</div>
                                         <div class="min-max">Total: {{ keurosFormat(resultsSummary.totalInvested1) }}
                                         </div>
@@ -37,7 +37,7 @@
                                     <td class="value-cell challenger2">
                                         <div class="min-max">Initial: {{ keurosFormat(resultsSummary.initialInvested2)
                                             }}</div>
-                                        <div class="min-max">Cashflow mensuel: {{ keurosFormat(resultsSummary.cashflow2)
+                                        <div class="min-max">Cashflow: {{ keurosFormat(resultsSummary.cashflow2)
                                             }}</div>
                                         <div class="min-max">Total: {{ keurosFormat(resultsSummary.totalInvested2) }}
                                         </div>
@@ -124,10 +124,12 @@
                                 </tr>
                                 <tr>
                                     <td class="metric-cell">Proba de victoire</td>
-                                    <td class="value-cell challenger1">{{ (resultsSummary.winningRatio1 *
-                                        100).toFixed(1) }}%</td>
-                                    <td class="value-cell challenger2">{{ (resultsSummary.winningRatio2 *
-                                        100).toFixed(1) }}%</td>
+                                    <td class="value-cell challenger1">
+                                        <div class="median">{{ (resultsSummary.winningRatio1 * 100).toFixed(1) }}%</div>
+                                    </td>
+                                    <td class="value-cell challenger2">
+                                        <div class="median">{{ (resultsSummary.winningRatio2 * 100).toFixed(1) }}%</div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
