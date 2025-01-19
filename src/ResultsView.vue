@@ -25,10 +25,22 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="metric-cell">Contribution totale</td>
-                                    <td class="value-cell challenger1">{{ keurosFormat(resultsSummary.totalInvested1) }}
+                                    <td class="metric-cell">Effort financier</td>
+                                    <td class="value-cell challenger1">
+                                        <div class="min-max">Initial: {{ keurosFormat(resultsSummary.initialInvested1)
+                                            }}</div>
+                                        <div class="min-max">Cashflow mensuel: {{ keurosFormat(resultsSummary.cashflow1)
+                                            }}</div>
+                                        <div class="min-max">Total: {{ keurosFormat(resultsSummary.totalInvested1) }}
+                                        </div>
                                     </td>
-                                    <td class="value-cell challenger2">{{ keurosFormat(resultsSummary.totalInvested2) }}
+                                    <td class="value-cell challenger2">
+                                        <div class="min-max">Initial: {{ keurosFormat(resultsSummary.initialInvested2)
+                                            }}</div>
+                                        <div class="min-max">Cashflow mensuel: {{ keurosFormat(resultsSummary.cashflow2)
+                                            }}</div>
+                                        <div class="min-max">Total: {{ keurosFormat(resultsSummary.totalInvested2) }}
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -301,8 +313,15 @@ export default {
         },
 
         processSummaryResults() {
+
+            const initialInvested1 = this.challenger1.totalInvestedEvolution.at(0);
+            const initialInvested2 = this.challenger2.totalInvestedEvolution.at(0);
+
             const totalInvested1 = this.challenger1.totalInvestedEvolution.at(-1);
             const totalInvested2 = this.challenger2.totalInvestedEvolution.at(-1);
+
+            const cashflow1 = (initialInvested1 - totalInvested1) / this.challenger1.totalInvestedEvolution.length;
+            const cashflow2 = (initialInvested2 - totalInvested2) / this.challenger2.totalInvestedEvolution.length;
 
             const challenger1Percentiles = this.computePercentiles(this.challenger1.portfolioEvolution);
             const challenger2Percentiles = this.computePercentiles(this.challenger2.portfolioEvolution);
@@ -342,8 +361,12 @@ export default {
                 finalPortfolio2,
                 capitalGain1,
                 capitalGain2,
+                initialInvested1,
+                initialInvested2,
                 totalInvested1,
                 totalInvested2,
+                cashflow1,
+                cashflow2,
                 portfolioIncrease1,
                 portfolioIncrease2,
                 winningRatio1,
