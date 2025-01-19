@@ -48,10 +48,20 @@
                 <span class="unit">%</span>
             </div>
         </div>
+
+        <div class="input-group">
+            <label for="insuranceRate">Taux d'assurance</label>
+            <div class="input-wrapper">
+                <input type="number" id="insuranceRate" v-model="insuranceRate" min="0" step="0.01" />
+                <span class="unit">%</span>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import { simulateRealEstate } from './simulator.js'
+
 export default {
     name: 'LMNPStrategy',
     props: {
@@ -62,22 +72,33 @@ export default {
     },
     data() {
         return {
-            propertyPriceInKeuros: 200,
-            monthlyRent: 950,
-            occupancyMonths: 12,
+            propertyPriceInKeuros: 250,
+            monthlyRent: 800,
+            occupancyMonths: 9,
             downPaymentPercent: 20,
             loanDuration: 20,
-            interestRate: 1.4
+            interestRate: 3,
+            insuranceRate: 0.5
         }
     },
     methods: {
         computeResults() {
-            // Placeholder for future implementation
             const propertyPrice = this.propertyPriceInKeuros * 1000;
+            const simResults = simulateRealEstate({
+                propertyPrice: propertyPrice,
+                monthlyRent: this.monthlyRent,
+                occupancyMonths: this.occupancyMonths,
+                downPaymentRatio: this.downPaymentPercent / 100,
+                loanDurationYears: this.loanDuration,
+                interestRate: this.interestRate / 100, // Convert from percentage to decimal
+                insuranceRate: this.insuranceRate / 100,
+                timeHorizonYears: this.timeHorizon
+            });
+
             return {
                 strategy: 'LMNP',
-                totalInvestedEvolution: [],
-                portfolioEvolution: []
+                totalInvestedEvolution: simResults.totalInvestedEvolution,
+                portfolioEvolution: simResults.portfolioEvolution
             }
         }
     }

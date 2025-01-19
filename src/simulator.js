@@ -24,6 +24,14 @@ const FEES = {
     }
 };
 
+const REAL_ESTATE_PARAMS = {
+    appreciationRate: 0.03,
+    volatility: 0.03,
+    acquisitionFees: 0.1,
+    maintenanceRatio: 0.01 // 1% of property price annual maintenance
+};
+
+
 const DEFAULT_SIM_NB = 5000;
 
 // Simulate ETF investment strategy
@@ -48,7 +56,7 @@ function simulateETF(params) {
 
     let totalInvestedEvolution = [];
     totalInvestedEvolution.push(initialAmount);
-    
+
     let portfolioEvolution = [];
     portfolioEvolution.push(new Array(simNb).fill(initialAmount * (1 - FEES.etf.transaction)));
 
@@ -58,7 +66,7 @@ function simulateETF(params) {
     };
 
     for (let i = 0; i < months; i++) {
-        let state = step(prevState, stepParams);
+        let state = stepETF(prevState, stepParams);
         totalInvestedEvolution.push(state.totalInvested);
         portfolioEvolution.push(state.portfolios);
         prevState = state;
@@ -70,7 +78,7 @@ function simulateETF(params) {
     };
 }
 
-function step(prevState, params) {
+function stepETF(prevState, params) {
     const {
         portfolios: prevPortfolios,
         totalInvested: prevTotalInvested,
@@ -88,7 +96,7 @@ function step(prevState, params) {
     const returns = generateRandomReturn(monthlyMean, monthlyVol, params.simNb);
 
     const totalInvested = prevTotalInvested + params.monthlyAmount;
-    let portfolios = prevPortfolios.map((pf, index) =>
+    const portfolios = prevPortfolios.map((pf, index) =>
         pf * (1 + returns[index]) * (1 - FEES.etf.ongoing / 12) + params.monthlyAmount * (1 - FEES.etf.transaction));
 
     return {
@@ -104,24 +112,6 @@ function generateRandomReturn(mean, volatility, simNb = DEFAULT_SIM_NB) {
     return zs.map((z) => mean + volatility * z);
 }
 
-
-// Statistical utility functions
-function percentile(values, p) {
-    const sorted = [...values].sort((a, b) => a - b);
-    const index = Math.floor(p * (sorted.length - 1));
-    return sorted[index];
-}
-
-function mean(values) {
-    return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-function standardDeviation(values) {
-    const avg = mean(values);
-    const squareDiffs = values.map(v => Math.pow(v - avg, 2));
-    return Math.sqrt(mean(squareDiffs));
-}
-
 // Format currency for display
 function formatCurrency(amount, locale = 'fr-FR', currency = 'EUR') {
     return new Intl.NumberFormat(locale, {
@@ -135,11 +125,133 @@ function formatPercentage(value, decimals = 1) {
     return `${(value * 100).toFixed(decimals)}%`;
 }
 
+// Simulate real estate investment strategy
+function simulateRealEstate(params) {
+    const {
+        propertyPrice,
+        monthlyRent,
+        occupancyMonths,
+        downPaymentRatio,
+        loanDurationYears,
+        interestRate,
+        insuranceRate,
+        timeHorizonYears,
+        simNb = DEFAULT_SIM_NB
+    } = params;
+
+    // Initial costs
+    const downPayment = propertyPrice * downPaymentRatio;
+
+    let totalInvestedEvolution = [];
+    totalInvestedEvolution.push(downPayment);
+
+    const acquisitionFees = propertyPrice * REAL_ESTATE_PARAMS.acquisitionFees;
+
+    let portfolioEvolution = [];
+    portfolioEvolution.push(new Array(simNb).fill(downPayment - acquisitionFees));
+
+    // Monthly loan payment calculation (fixed rate)
+    const loanAmount = propertyPrice + acquisitionFees - downPayment;
+    const monthlyLoanRate = (interestRate + insuranceRate) / 12;
+    const loanDurationMonths = loanDurationYears * 12;
+    const monthlyLoanPayment = loanAmount *
+        (monthlyLoanRate * Math.pow(1 + monthlyLoanRate, loanDurationMonths)) /
+        (Math.pow(1 + monthlyLoanRate, loanDurationMonths) - 1);
+
+    const stepParams = {
+        monthlyRent,
+        occupancyMonths,
+        monthlyLoanPayment,
+        appreciationRate: REAL_ESTATE_PARAMS.appreciationRate,
+        volatility: REAL_ESTATE_PARAMS.volatility,
+        maintenanceRatio: REAL_ESTATE_PARAMS.maintenanceRatio,
+        monthlyLoanRate,
+        simNb
+    };
+
+    let prevState = {
+        portfolios: portfolioEvolution[0],
+        totalInvested: totalInvestedEvolution[0],
+        propertyValue: new Array(simNb).fill(propertyPrice),
+        remainingLoan: loanAmount
+    };
+
+    const months = timeHorizonYears * 12;
+    for (let i = 0; i < months; i++) {
+        const state = stepRealEstate(prevState, stepParams);
+
+        totalInvestedEvolution.push(state.totalInvested);
+        portfolioEvolution.push(state.portfolios);
+        prevState = state;
+    }
+
+    return {
+        totalInvestedEvolution,
+        portfolioEvolution
+    };
+}
+
+function stepRealEstate(prevState, params) {
+    const {
+        portfolios: prevPortfolios,
+        totalInvested: prevTotalInvested,
+        propertyValue: prevPropertyValue,
+        remainingLoan: prevRemainingLoan
+    } = prevState;
+
+    const {
+        monthlyRent,
+        occupancyMonths,
+        monthlyLoanPayment,
+        appreciationRate,
+        volatility,
+        maintenanceRatio,
+        monthlyLoanRate,
+        simNb
+    } = params;
+
+    // Monthly maintenance cost (averaged)
+    const maintenanceCost = prevPropertyValue.reduce((acc, val) => acc + val * maintenanceRatio / 12) / simNb;
+
+    // Calculate effective rent (accounting for vacancy)
+    const effectiveRent = monthlyRent * occupancyMonths / 12;
+
+    // Calculate monthly cashflow
+    const monthlyCashflow = effectiveRent - (prevRemainingLoan === 0 ? 0 : monthlyLoanPayment) - maintenanceCost;
+
+    // Update remaining loan
+    const remainingLoan = Math.max(0, prevRemainingLoan -
+        (monthlyLoanPayment - (prevRemainingLoan * monthlyLoanRate)));
+
+    // Generate random property value changes
+    const monthlyAppreciation = appreciationRate / 12;
+    const monthlyVol = volatility / Math.sqrt(12);
+    const returns = generateRandomReturn(monthlyAppreciation, monthlyVol, simNb);
+
+    // Update property value with appreciation
+    const propertyValue = prevPropertyValue.map(
+        (val, index) => val * (1 + returns[index]));
+
+    // Update portfolio values
+    const portfolios = propertyValue.map((val) => val - remainingLoan);
+
+    const totalInvested = prevTotalInvested - monthlyCashflow;
+
+    return {
+        portfolios,
+        propertyValue,
+        remainingLoan,
+        totalInvested
+    };
+}
+
 export {
     simulateETF,
+    simulateRealEstate,
     formatCurrency,
     formatPercentage,
     ETF as MARKET_PARAMS,
+    REAL_ESTATE_PARAMS,
     FEES
 };
 
