@@ -32,7 +32,7 @@ const REAL_ESTATE_PARAMS = {
 };
 
 
-const DEFAULT_SIM_NB = 5000;
+const DEFAULT_SIM_NB = 6000;
 
 // Simulate ETF investment strategy
 function simulateETF(params) {
