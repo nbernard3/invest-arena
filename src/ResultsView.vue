@@ -28,26 +28,38 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="metric-cell">Effort financier</td>
+                                    <td class="metric-cell">
+                                        <div class="metric-with-tooltip">
+                                            Effort financier
+                                            <InfoTooltip
+                                                text="Montants investis : initial, mensuel et total cumulé" />
+                                        </div>
+                                    </td>
                                     <td class="value-cell challenger1">
                                         <div class="min-max">Initial: {{ keurosFormat(resultsSummary.initialInvested1)
                                             }}</div>
-                                        <div class="min-max">Cashflow: {{ keurosFormat(resultsSummary.cashflow1)
-                                            }}</div>
+                                        <div class="min-max">Cashflow: {{ keurosFormat(resultsSummary.cashflow1) }}
+                                        </div>
                                         <div class="min-max">Total: {{ keurosFormat(resultsSummary.totalInvested1) }}
                                         </div>
                                     </td>
                                     <td class="value-cell challenger2">
                                         <div class="min-max">Initial: {{ keurosFormat(resultsSummary.initialInvested2)
                                             }}</div>
-                                        <div class="min-max">Cashflow: {{ keurosFormat(resultsSummary.cashflow2)
-                                            }}</div>
+                                        <div class="min-max">Cashflow: {{ keurosFormat(resultsSummary.cashflow2) }}
+                                        </div>
                                         <div class="min-max">Total: {{ keurosFormat(resultsSummary.totalInvested2) }}
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="metric-cell">Capital final</td>
+                                    <td class="metric-cell">
+                                        <div class="metric-with-tooltip">
+                                            Capital final
+                                            <InfoTooltip
+                                                text="Valeur finale du portefeuille. Min/Max = 10ème et 90ème percentiles" />
+                                        </div>
+                                    </td>
                                     <td class="value-cell challenger1">
                                         <div class="min-max">Min: {{ keurosFormat(resultsSummary.finalPortfolio1[0]) }}
                                         </div>
@@ -72,7 +84,13 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="metric-cell">Plus-value</td>
+                                    <td class="metric-cell">
+                                        <div class="metric-with-tooltip">
+                                            Plus-value
+                                            <InfoTooltip
+                                                text="Gains = Capital final - Total investi. Min/Max = 10ème et 90ème percentiles" />
+                                        </div>
+                                    </td>
                                     <td class="value-cell challenger1">
                                         <div class="min-max">Min: {{ keurosFormat(resultsSummary.capitalGain1[0]) }}
                                         </div>
@@ -97,36 +115,44 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="metric-cell">Enrichissement latent</td>
+                                    <td class="metric-cell">
+                                        <div class="metric-with-tooltip">
+                                            Enrichissement latent
+                                            <InfoTooltip
+                                                text="Augmentation = Capital final - Capital initial. Min/Max = 10ème et 90ème percentiles" />
+                                        </div>
+                                    </td>
                                     <td class="value-cell challenger1">
                                         <div class="min-max">Min: {{ keurosFormat(resultsSummary.portfolioIncrease1[0])
-                                            }}
-                                        </div>
+                                            }}</div>
                                         <div class="median">
                                             <span class="label">Median:</span>
                                             <span class="value">{{ keurosFormat(resultsSummary.portfolioIncrease1[1])
                                                 }}</span>
                                         </div>
                                         <div class="min-max">Max: {{ keurosFormat(resultsSummary.portfolioIncrease1[2])
-                                            }}
-                                        </div>
+                                            }}</div>
                                     </td>
                                     <td class="value-cell challenger2">
                                         <div class="min-max">Min: {{ keurosFormat(resultsSummary.portfolioIncrease2[0])
-                                            }}
-                                        </div>
+                                            }}</div>
                                         <div class="median">
                                             <span class="label">Median:</span>
                                             <span class="value">{{ keurosFormat(resultsSummary.portfolioIncrease2[1])
                                                 }}</span>
                                         </div>
                                         <div class="min-max">Max: {{ keurosFormat(resultsSummary.portfolioIncrease2[2])
-                                            }}
-                                        </div>
+                                            }}</div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="metric-cell">Proba de victoire</td>
+                                    <td class="metric-cell">
+                                        <div class="metric-with-tooltip">
+                                            Proba de victoire
+                                            <InfoTooltip
+                                                text="Probabilité que cette stratégie performe mieux que l'autre à l'issue de la période. Si cette proba est entre 45/55, match nul car on est dans la marge d'erreur." />
+                                        </div>
+                                    </td>
                                     <td class="value-cell challenger1">
                                         <div class="median">{{ (resultsSummary.winningRatio1 * 100).toFixed(1) }}%</div>
                                     </td>
@@ -146,13 +172,15 @@
 <script>
 import { Line } from 'vue-chartjs';
 import { Chart as ChartJS, Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler } from 'chart.js'
+import InfoTooltip from "./InfoTooltip.vue"
 
 ChartJS.register(Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler)
 
 export default {
     name: 'ResultsView',
     components: {
-        Line
+        Line,
+        InfoTooltip
     },
     props: {
         challenger1: {
@@ -694,5 +722,11 @@ export default {
 
 .value-cell.challenger2 .median {
     background-color: rgba(239, 68, 68, 0.1);
+}
+
+.metric-with-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 </style>
