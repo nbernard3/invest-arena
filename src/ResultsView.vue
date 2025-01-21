@@ -150,7 +150,7 @@
                                         <div class="metric-with-tooltip">
                                             Proba de victoire
                                             <InfoTooltip
-                                                text="Probabilité que cette stratégie performe mieux que l'autre à l'issue de la période. Si cette proba est entre 45/55, match nul car on est dans la marge d'erreur." />
+                                                text="Probabilité le capital final soit plus important que l'autre. Si cette proba est entre 45/55, match nul car on est dans la marge d'erreur." />
                                         </div>
                                     </td>
                                     <td class="value-cell challenger1">
