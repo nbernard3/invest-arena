@@ -4,11 +4,38 @@
       <h1>Market Kombat</h1>
     </nav>
 
+    <div class="explanation">
+      <button class="explanation-toggle" @click="isExplanationVisible = !isExplanationVisible">
+        <h2>⚙️ Comment ça marche ?</h2>
+        <span class="toggle-icon" :class="{ 'rotated': isExplanationVisible }">▼</span>
+      </button>
+      <div class="explanation-content" :class="{ 'visible': isExplanationVisible }">
+        <p>Pour chaque stratégie, nous simulons 6000 scénarios différents, mois par mois sur toute la période, en
+          utilisant :</p>
+        <ul>
+          <li>Les rendements historiques moyens des actifs sélectionnés</li>
+          <li>Leur volatilité observée sur une base mensuelle</li>
+          <li>Les frais de transaction et de gestion</li>
+        </ul>
+        <p>Pour déterminer le vainqueur, nous comparons :</p>
+        <ul>
+          <li>La distribution des capitaux finaux entre les deux stratégies</li>
+          <li>Le ratio de victoire : pourcentage des scénarios où une stratégie surperforme l'autre</li>
+          <li>Une marge d'erreur de 5% est appliquée pour éviter les victoires non significatives</li>
+        </ul>
+      </div>
+    </div>
+
     <div class="disclaimer">
       <p>
-        Avis de non-responsabilité: Cet outil est uniquement destiné à la simulation.
-        Les auteurs ne peuvent être tenus responsables des décisions d'investissement prises sur la base
-        de ces résultats. Les performances passées ne préjugent pas des performances futures.
+        Avis de non-responsabilité: Cet outil de simulation n'est fourni qu'à titre éducatif
+        et informatif. Les résultats présentés reposent sur des hypothèses simplifiées et des données historiques qui ne
+        reflètent pas nécessairement la complexité des marchés financiers. Les rendements simulés ne prennent pas en
+        compte tous les frais, taxes et coûts de transaction potentiels. Les auteurs ne fournissent aucun conseil en
+        investissement et ne peuvent être tenus responsables des décisions d'investissement prises sur la base de ces
+        simulations. Les performances passées ne préjugent pas des performances futures, et les résultats réels peuvent
+        différer significativement des projections présentées. Nous vous recommandons de consulter un conseiller
+        financier qualifié avant toute décision d'investissement.
       </p>
     </div>
 
@@ -64,7 +91,8 @@ export default {
       resultsAvailable: false,
       isLoading: false,
       challenger1Results: null,
-      challenger2Results: null
+      challenger2Results: null,
+      isExplanationVisible: false,
     }
   },
   methods: {
@@ -292,5 +320,79 @@ nav h1 {
   align-items: center;
   width: 100%;
   margin: 2rem 0;
+}
+
+.explanation {
+  margin-bottom: 2rem;
+  background-color: #1e293b;
+  border-radius: 0.5rem;
+  border-left: 4px solid #fbbf24;
+}
+
+.explanation-toggle {
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.explanation-toggle:hover {
+  background-color: rgba(251, 191, 36, 0.1);
+}
+
+.explanation h2 {
+  color: #fbbf24;
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.toggle-icon {
+  color: #fbbf24;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.explanation-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  color: #e2e8f0;
+  padding: 0 1.5rem;
+}
+
+.explanation-content.visible {
+  max-height: 500px;
+  /* Adjust this value based on your content */
+  padding-bottom: 1.5rem;
+}
+
+.explanation-content p {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.explanation-content ul {
+  margin-bottom: 1rem;
+  margin-left: 1.5rem;
+}
+
+.explanation-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.explanation-content li::marker {
+  color: #fbbf24;
 }
 </style>
