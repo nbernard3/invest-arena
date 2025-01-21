@@ -2,9 +2,9 @@
     <div class="fade-in">
         <div class="results">
             <div class="results-title">
-                <div v-if="resultsSummary.winner === 1">Challenger 1 wins!</div>
-                <div v-else-if="resultsSummary.winner === 2">Challenger 2 wins!</div>
-                <div v-else>It's a tie!</div>
+                <div v-if="resultsSummary.winner === 1">🏆 Challenger 1 wins! 🏆</div>
+                <div v-else-if="resultsSummary.winner === 2">🏆 Challenger 2 wins! 🏆</div>
+                <div v-else>🤝 It's a tie! 🤝</div>
             </div>
             <div class="results-content">
                 <div class="results-grid">

@@ -32,7 +32,7 @@
       <button @click="runSimulation" :disabled="isLoading" class="fight-button">
         <span class="lucide-swords"></span>
         <span>
-          {{ isLoading ? 'FIGHTING...' : 'READY? FIGHT!' }}
+          {{ isLoading ? 'FIGHTING...' : '⚔️ READY? FIGHT! ⚔️' }}
         </span>
         <span class="lucide-swords"></span>
 
