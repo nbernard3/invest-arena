@@ -97,8 +97,7 @@ export default {
 
             return {
                 strategy: 'LMNP',
-                totalInvestedEvolution: simResults.totalInvestedEvolution,
-                portfolioEvolution: simResults.portfolioEvolution
+                ...simResults
             }
         }
     }

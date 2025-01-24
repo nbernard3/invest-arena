@@ -48,8 +48,7 @@ export default {
 
             return {
                 strategy: 'Lumpsum',
-                totalInvestedEvolution: simResults.totalInvestedEvolution,
-                portfolioEvolution: simResults.portfolioEvolution
+                ...simResults
             }
         }
     }

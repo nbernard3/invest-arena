@@ -74,7 +74,16 @@ function simulateETF(params) {
 
     return {
         totalInvestedEvolution,
-        portfolioEvolution
+        portfolioEvolution,
+        parameters: {
+            initialAmount,
+            monthlyAmount,
+            etf: etfType,
+            meanReturn: etfParams.meanReturn,
+            volatility: etfParams.volatility,
+            transactionFees: FEES.etf.transaction,
+            managementFees: FEES.etf.ongoing
+        }
     };
 }
 
@@ -187,7 +196,17 @@ function simulateRealEstate(params) {
 
     return {
         totalInvestedEvolution,
-        portfolioEvolution
+        portfolioEvolution,
+        parameters: {
+            propertyPrice,
+            monthlyRent,
+            occupancyMonths,
+            downPaymentRatio,
+            loanDurationYears,
+            interestRate,
+            insuranceRate,
+            ...REAL_ESTATE_PARAMS
+        }
     };
 }
 

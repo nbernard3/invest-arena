@@ -72,18 +72,23 @@
 
     <ResultsView ref="resultsSection" v-if="resultsAvailable" :challenger1="challenger1Results"
       :challenger2="challenger2Results" />
+
+    <SimulationDetails v-if="resultsAvailable" :challenger1Results="challenger1Results"
+      :challenger2Results="challenger2Results" :timeHorizon="parseInt(selectedTimeHorizon)" />
   </div>
 </template>
 
 <script>
 import ChallengerPlaceholder from './ChallengerPlaceholder.vue'
 import ResultsView from './ResultsView.vue'
+import SimulationDetails from './SimulationDetails.vue';
 
 export default {
   name: 'InvestmentSimulator',
   components: {
     ChallengerPlaceholder,
-    ResultsView
+    ResultsView,
+    SimulationDetails
   },
   data() {
     return {
@@ -112,7 +117,7 @@ export default {
       // Update results
       this.challenger1Results = {
         name: 'Challenger 1',
-        ...results1
+        ...results1,
       }
 
       this.challenger2Results = {

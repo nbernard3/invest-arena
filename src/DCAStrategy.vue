@@ -57,8 +57,7 @@ export default {
 
             return {
                 strategy: 'DCA',
-                totalInvestedEvolution: simResults.totalInvestedEvolution,
-                portfolioEvolution: simResults.portfolioEvolution
+                ...simResults
             }
         }
     }
