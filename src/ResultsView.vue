@@ -119,7 +119,7 @@
                                         <div class="metric-with-tooltip">
                                             Enrichissement latent
                                             <InfoTooltip
-                                                text="Augmentation = Capital final - Capital initial. Min/Max = 10ème et 90ème percentiles" />
+                                                text="Enrichissement = Capital final - Capital initial. Min/Max = 10ème et 90ème percentiles" />
                                         </div>
                                     </td>
                                     <td class="value-cell challenger1">
@@ -150,7 +150,7 @@
                                         <div class="metric-with-tooltip">
                                             Proba de victoire
                                             <InfoTooltip
-                                                text="Probabilité le capital final soit plus important que l'autre. Si cette proba est entre 45/55, match nul car on est dans la marge d'erreur." />
+                                                text="Proba que le capital final soit plus important que l'autre. Si cette proba est entre 45/55, match nul car on est dans la marge d'erreur." />
                                         </div>
                                     </td>
                                     <td class="value-cell challenger1">

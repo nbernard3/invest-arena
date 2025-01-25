@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <nav>
-      <h1>Market Kombat</h1>
+      <h1>StratInvest Arena</h1>
     </nav>
 
     <div class="explanation">
