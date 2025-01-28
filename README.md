@@ -1,5 +1,7 @@
 # Invest Arena 🏦
 
+https://nbernard3.github.io/invest-arena/
+
 ## Description du projet
 
 Invest Arena est une application web interactive permettant de comparer différentes stratégies d'investissement sur le long terme. L'application utilise une approche Monte-Carlo pour modéliser et visualiser les performances de différentes stratégies d'investissement. Cette méthode permet d'analyser statistiquement les résultats possibles en tenant compte de la nature aléatoire des marchés financiers. Les stratégies comparables incluent notamment :
