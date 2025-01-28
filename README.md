@@ -1,4 +1,4 @@
-# stratinvest-arena
+# invest-arena
 
 ## Recommended IDE Setup
 

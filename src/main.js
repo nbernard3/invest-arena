@@ -1,4 +1,4 @@
 import { createApp } from 'vue'
-import MarketKombat from './MarketKombat.vue'
+import InvestArena from './InvestArena.vue'
 
-createApp(MarketKombat).mount('#app')
+createApp(InvestArena).mount('#app')
